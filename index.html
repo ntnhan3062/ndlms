@@ -195,6 +195,88 @@
             color: var(--blue);
         }
 
+        .file-context-menu {
+            position: fixed;
+            z-index: 1000;
+            display: none;
+            width: 220px;
+            padding: 5px;
+            background: #fff;
+            border: 1px solid #e5eaf1;
+            border-radius: 10px;
+            box-shadow: 0 8px 28px rgba(16, 24, 40, .16);
+        }
+
+        .file-context-menu.active {
+            display: block;
+            animation: context-menu-in .12s ease-out both;
+        }
+
+        @keyframes context-menu-in {
+            from {
+                opacity: 0;
+                transform: translateY(-3px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .file-context-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 39px;
+            padding: 8px 10px;
+            color: #172033;
+            text-align: left;
+            background: transparent;
+            border: 0;
+            border-radius: 7px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .file-context-option:hover,
+        .file-context-option:focus-visible {
+            color: var(--blue);
+            background: #f2f7ff;
+            outline: none;
+        }
+
+        .file-context-option svg {
+            flex: 0 0 17px;
+            width: 17px;
+            height: 17px;
+        }
+
+        .copy-toast {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 1100;
+            max-width: calc(100vw - 36px);
+            padding: 11px 15px;
+            color: #fff;
+            background: #172033;
+            border-radius: 9px;
+            box-shadow: 0 5px 20px rgba(16, 24, 40, .2);
+            font-size: 13px;
+            line-height: 1.4;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(6px);
+            transition: opacity .18s ease, transform .18s ease;
+        }
+
+        .copy-toast.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .file-icon {
             display: grid;
             flex: 0 0 33px;
@@ -575,6 +657,25 @@
         </div>
     </main>
 
+    <div class="file-context-menu" id="file-context-menu" role="menu" aria-label="Tùy chọn tệp">
+        <button class="file-context-option" id="context-open-file" type="button" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M13 3v7h7M8 14h8M8 17h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Mở file</span>
+        </button>
+        <button class="file-context-option" id="context-copy-link" type="button" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M10 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.7 1.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M14 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.7-1.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <span>Sao chép liên kết xem file</span>
+        </button>
+    </div>
+
+    <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
+
     <section class="viewer" id="viewer" aria-label="Trình xem tài liệu" aria-hidden="true">
         <header class="viewer-header">
             <div class="viewer-heading">
@@ -638,7 +739,13 @@
         const viewerBody = document.getElementById("viewer-body");
         const closeViewerButton = document.getElementById("close-viewer");
         const downloadViewerButton = document.getElementById("download-viewer");
+        const fileContextMenu = document.getElementById("file-context-menu");
+        const contextOpenFileButton = document.getElementById("context-open-file");
+        const contextCopyLinkButton = document.getElementById("context-copy-link");
+        const copyToast = document.getElementById("copy-toast");
 
+        let contextMenuFile = null;
+        let toastTimeout = null;
         let files = [];
         let activeFile = null;
         let previousBodyOverflow = "";
@@ -792,6 +899,10 @@
 
                 nameButton.appendChild(textWrap);
                 nameButton.addEventListener("click", () => openFile(file));
+                nameButton.addEventListener("contextmenu", event => {
+                    event.preventDefault();
+                    showFileContextMenu(file, event.clientX, event.clientY);
+                });
 
                 nameCell.appendChild(nameButton);
                 row.appendChild(nameCell);
@@ -804,6 +915,127 @@
             void tableShell.offsetWidth;
             tableShell.classList.add("table-opening");
         }
+
+        function showFileContextMenu(file, x, y) {
+            contextMenuFile = file;
+            fileContextMenu.classList.add("active");
+            fileContextMenu.style.left = "0px";
+            fileContextMenu.style.top = "0px";
+
+            const menuRect = fileContextMenu.getBoundingClientRect();
+            const margin = 8;
+            const left = Math.max(
+                margin,
+                Math.min(x, window.innerWidth - menuRect.width - margin)
+            );
+            const top = Math.max(
+                margin,
+                Math.min(y, window.innerHeight - menuRect.height - margin)
+            );
+
+            fileContextMenu.style.left = left + "px";
+            fileContextMenu.style.top = top + "px";
+        }
+
+        function hideFileContextMenu() {
+            fileContextMenu.classList.remove("active");
+            contextMenuFile = null;
+        }
+
+        function showCopyToast(message) {
+            copyToast.textContent = message;
+            copyToast.classList.add("active");
+
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+            }
+
+            toastTimeout = setTimeout(() => {
+                copyToast.classList.remove("active");
+            }, 2200);
+        }
+
+        async function copyTextToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return;
+            }
+
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.setAttribute("readonly", "");
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            textarea.style.pointerEvents = "none";
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            const copied = document.execCommand("copy");
+            textarea.remove();
+
+            if (!copied) {
+                throw new Error("Trình duyệt không cho phép sao chép liên kết.");
+            }
+        }
+
+        async function copyFileViewLink() {
+            const file = contextMenuFile;
+            hideFileContextMenu();
+
+            if (!file) {
+                return;
+            }
+
+            if (file.id === undefined || file.id === null || String(file.id).trim() === "") {
+                showCopyToast("File này chưa có ID để tạo liên kết xem.");
+                return;
+            }
+
+            const url = new URL(window.location.href);
+            url.search = "";
+            url.hash = "";
+            url.searchParams.set("id", String(file.id));
+
+            try {
+                await copyTextToClipboard(url.toString());
+                showCopyToast("Đã sao chép liên kết xem file.");
+            } catch (error) {
+                console.error("Không thể sao chép liên kết:", error);
+                showCopyToast("Không thể sao chép liên kết. Vui lòng thử lại.");
+            }
+        }
+
+        contextOpenFileButton.addEventListener("click", () => {
+            const file = contextMenuFile;
+            hideFileContextMenu();
+
+            if (file) {
+                openFile(file);
+            }
+        });
+
+        contextCopyLinkButton.addEventListener("click", copyFileViewLink);
+
+        document.addEventListener("pointerdown", event => {
+            if (!fileContextMenu.contains(event.target)) {
+                hideFileContextMenu();
+            }
+        });
+
+        document.addEventListener("click", event => {
+            if (!fileContextMenu.contains(event.target)) {
+                hideFileContextMenu();
+            }
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                hideFileContextMenu();
+            }
+        });
+
+        window.addEventListener("resize", hideFileContextMenu);
+        window.addEventListener("scroll", hideFileContextMenu, true);
 
         async function loadFiles() {
             if (loading) {
@@ -877,20 +1109,15 @@
 
         function showMissingFile() {
             activeFile = null;
-
             siteHeader.style.display = "none";
             mainContent.style.display = "none";
-
             viewer.classList.add("active");
             viewer.setAttribute("aria-hidden", "false");
-
             viewerTitle.textContent = "Không tìm thấy tài liệu";
             viewerTitle.title = "Không tìm thấy tài liệu";
             viewerFileIcon.innerHTML = makeSvgIcon();
-
             closeViewerButton.style.display = "none";
             downloadViewerButton.style.display = "none";
-
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
 
@@ -905,13 +1132,8 @@
             warning.innerHTML = `
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
-                          stroke="currentColor"
-                          stroke-width="1.7"
-                          stroke-linejoin="round"/>
-                    <path d="M12 9v4.5m0 3h.01"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"/>
+                          stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                    <path d="M12 9v4.5m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
             `;
 
@@ -924,9 +1146,7 @@
         }
 
         async function openFileById(id) {
-            const target = files.find(
-                file => String(file.id) === String(id)
-            );
+            const target = files.find(file => String(file.id) === String(id));
 
             if (!target) {
                 showMissingFile();
@@ -968,12 +1188,10 @@
             viewerTitle.textContent = file.displayName || file.fileName;
             viewerTitle.title = file.displayName || file.fileName;
             viewerFileIcon.innerHTML = makeSvgIcon();
-
             closeViewerButton.style.display = fromDirectLink ? "none" : "grid";
             downloadViewerButton.style.display = "grid";
             downloadViewerButton.disabled = false;
-            downloadViewerButton.title =
-                "Tải xuống " + file.fileName.split("/").pop();
+            downloadViewerButton.title = "Tải xuống " + (file.fileName.split("/").pop());
 
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
@@ -1120,7 +1338,6 @@
 
             document.body.style.overflow = previousBodyOverflow;
             activeFile = null;
-
             closeViewerButton.style.display = "grid";
             downloadViewerButton.style.display = "grid";
             downloadViewerButton.disabled = false;
@@ -1133,14 +1350,11 @@
 
             downloadInProgress = true;
             downloadViewerButton.disabled = true;
-
             const file = activeFile;
             const fileUrl = getFileUrl(file);
 
             try {
-                const response = await fetch(fileUrl, {
-                    cache: "no-store"
-                });
+                const response = await fetch(fileUrl, { cache: "no-store" });
 
                 if (!response.ok) {
                     throw new Error("HTTP " + response.status);
@@ -1148,34 +1362,24 @@
 
                 const blob = await response.blob();
                 const objectUrl = URL.createObjectURL(blob);
-
                 const link = document.createElement("a");
                 link.href = objectUrl;
-                link.download =
-                    file.fileName.split("/").pop() || "tai-lieu";
+                link.download = file.fileName.split("/").pop() || "tai-lieu";
                 link.style.display = "none";
-
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
-
                 setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
             } catch (error) {
                 console.error("Không thể tải file:", error);
-
-                showViewerMessage(
-                    "Không thể tải file xuống. Vui lòng thử lại."
-                );
+                showViewerMessage("Không thể tải file xuống. Vui lòng thử lại.");
             } finally {
                 downloadInProgress = false;
                 downloadViewerButton.disabled = false;
             }
         }
 
-        downloadViewerButton.addEventListener(
-            "click",
-            downloadActiveFile
-        );
+        downloadViewerButton.addEventListener("click", downloadActiveFile);
 
         closeViewerButton.addEventListener(
             "click",
