@@ -1,263 +1,1007 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>NdLMS – GitHub Uploader</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+    <title>NdLMS — Thư viện tài liệu</title>
+    <link rel="icon" href="./Logo.png" type="image/png">
+    <style>
+        :root {
+            --blue: #1769e0;
+            --blue-dark: #1255b8;
+            --text: #172033;
+            --muted: #667085;
+            --border: #e5eaf1;
+            --page: #f6f8fb;
+            --hover: #f2f7ff;
+        }
 
-<style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(135deg,#f8fafc,#e2e8f0);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #0f172a;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-.card {
-  background: #ffffff;
-  width: 480px;
-  padding: 26px;
-  border-radius: 18px;
-  box-shadow: 0 20px 45px rgba(0,0,0,.12);
-}
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+        }
 
-h2 {
-  margin-top: 0;
-  color: #2563eb;
-}
+        body {
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background: var(--page);
+            -webkit-font-smoothing: antialiased;
+        }
 
-p { font-size: 14px; }
+        button {
+            font: inherit;
+        }
 
-input[type=file] {
-  width: 100%;
-  margin: 12px 0;
-}
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-height: 66px;
+            padding: 9px clamp(14px, 3vw, 34px);
+            background: rgba(255, 255, 255, .96);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
 
-.file-box {
-  border: 2px dashed #cbd5e1;
-  border-radius: 12px;
-  padding: 10px;
-  min-height: 90px;
-  background: #f8fafc;
-  font-size: 14px;
-  margin-bottom: 14px;
-}
-.file {
-  background: #e5edff;
-  padding: 6px 8px;
-  border-radius: 6px;
-  margin-bottom: 6px;
-}
-.empty { color: #64748b; }
+        .brand-logo {
+            display: block;
+            flex: 0 0 43px;
+            width: 43px;
+            height: 43px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
 
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: #2563eb;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-}
-button:disabled { opacity: .6; }
+        .brand-copy {
+            min-width: 0;
+        }
 
-.progress {
-  margin-top: 14px;
-  width: 100%;
-  height: 10px;
-  background: #e5e7eb;
-  border-radius: 999px;
-  overflow: hidden;
-}
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg,#3b82f6,#2563eb);
-  transition: width .3s;
-}
-.progress-text {
-  font-size: 13px;
-  margin-top: 6px;
-  color: #475569;
-}
+        .brand-title {
+            margin: 0;
+            font-size: 19px;
+            line-height: 1.2;
+            font-weight: 750;
+            letter-spacing: -.35px;
+        }
 
-.links a {
-  display: block;
-  font-size: 13px;
-  margin-top: 4px;
-  color: #2563eb;
-  text-decoration: none;
-}
-.links a:hover { text-decoration: underline; }
+        .brand-tagline {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.35;
+        }
 
-/* Decode log popup */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15,23,42,.35);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-.popup {
-  background: #ffffff;
-  width: 540px;
-  max-height: 380px;
-  padding: 18px;
-  border-radius: 14px;
-  overflow: auto;
-  font-family: Consolas, monospace;
-  font-size: 13px;
-  white-space: pre-wrap;
-  box-shadow: 0 20px 40px rgba(0,0,0,.2);
-}
-</style>
+        main {
+            width: min(100%, 1100px);
+            margin: 0 auto;
+            padding: 22px clamp(12px, 3vw, 28px) 36px;
+        }
+
+        .table-shell {
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            box-shadow: 0 3px 12px rgba(20, 37, 63, .035);
+            transform-origin: top center;
+        }
+
+        .table-shell.table-opening {
+            animation: table-expand .36s cubic-bezier(.2, .75, .25, 1) both;
+        }
+
+        @keyframes table-expand {
+            from {
+                opacity: 0;
+                transform: scaleY(.88) translateY(-7px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scaleY(1) translateY(0);
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        thead {
+            background: #f8fafc;
+        }
+
+        th {
+            height: 43px;
+            padding: 0 15px;
+            color: #586477;
+            font-size: 11px;
+            font-weight: 700;
+            text-align: left;
+            letter-spacing: .45px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th:first-child,
+        td:first-child {
+            width: 105px;
+            text-align: center;
+        }
+
+        td {
+            height: 58px;
+            padding: 0 15px;
+            font-size: 13px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        tbody tr {
+            transition: background .15s ease;
+        }
+
+        tbody tr:hover {
+            background: var(--hover);
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 25px;
+            padding: 4px 9px;
+            color: #475467;
+            background: #f1f3f6;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .type-badge.answer {
+            color: #147344;
+            background: #e9f8ef;
+        }
+
+        .file-name-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-width: 0;
+            padding: 11px 0;
+            color: var(--text);
+            text-align: left;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .file-name-button:hover .file-title {
+            color: var(--blue);
+        }
+
+        .file-icon {
+            display: grid;
+            flex: 0 0 33px;
+            width: 33px;
+            height: 33px;
+            place-items: center;
+            color: var(--blue);
+            background: #edf4ff;
+            border-radius: 9px;
+        }
+
+        .file-icon svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .file-text {
+            display: block;
+            min-width: 0;
+        }
+
+        .file-title {
+            display: block;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+            line-height: 1.45;
+            font-weight: 650;
+            transition: color .15s ease;
+        }
+
+        .file-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .status {
+            padding: 34px 18px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .status.error {
+            color: #b42318;
+        }
+
+        .retry-button {
+            margin-top: 12px;
+            padding: 8px 13px;
+            color: var(--blue);
+            background: #fff;
+            border: 1px solid #cbdcf8;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .retry-button:hover {
+            background: #f2f7ff;
+        }
+
+        .loading-spinner {
+            width: 25px;
+            height: 25px;
+            margin: 0 auto;
+            border: 3px solid #d8e5fb;
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            display: none;
+            flex-direction: column;
+            background: #f1f3f6;
+        }
+
+        .viewer.active {
+            display: flex;
+        }
+
+        .viewer-header {
+            display: flex;
+            flex: 0 0 54px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-width: 0;
+            padding: 0 15px 0 20px;
+            color: #172033;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .viewer-title {
+            overflow: hidden;
+            min-width: 0;
+            font-size: 14px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .close-viewer {
+            display: grid;
+            flex: 0 0 36px;
+            width: 36px;
+            height: 36px;
+            place-items: center;
+            color: #475467;
+            background: transparent;
+            border: 0;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+
+        .close-viewer:hover {
+            color: #b42318;
+            background: #fff0f0;
+        }
+
+        .close-viewer svg {
+            width: 21px;
+            height: 21px;
+        }
+
+        .viewer-body {
+            position: relative;
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            background: #e9edf3;
+        }
+
+        .viewer-frame {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            background: #fff;
+            border: 0;
+        }
+
+        .viewer-image {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            margin: auto;
+            object-fit: contain;
+        }
+
+        .viewer-text {
+            width: min(100%, 1100px);
+            min-height: 100%;
+            margin: 0 auto;
+            padding: 24px;
+            color: #1f2937;
+            background: #fff;
+            font: 13px/1.65 Consolas, "Courier New", monospace;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .viewer-message {
+            display: flex;
+            min-height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 28px;
+            color: #475467;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .viewer-message a {
+            color: var(--blue);
+            font-weight: 650;
+        }
+
+        @media (max-width: 600px) {
+            .site-header {
+                min-height: 59px;
+                padding: 8px 12px;
+            }
+
+            .brand-logo {
+                flex-basis: 38px;
+                width: 38px;
+                height: 38px;
+            }
+
+            .brand-title {
+                font-size: 17px;
+            }
+
+            .brand-tagline {
+                font-size: 10px;
+            }
+
+            main {
+                padding: 17px 9px 26px;
+            }
+
+            th {
+                padding: 0 9px;
+                font-size: 10px;
+            }
+
+            th:first-child,
+            td:first-child {
+                width: 82px;
+            }
+
+            td {
+                padding: 0 8px;
+            }
+
+            .file-name-button {
+                gap: 8px;
+            }
+
+            .file-icon {
+                flex-basis: 29px;
+                width: 29px;
+                height: 29px;
+            }
+
+            .file-title {
+                font-size: 12px;
+            }
+
+            .file-subtitle {
+                font-size: 10px;
+            }
+
+            .type-badge {
+                padding: 4px 6px;
+                font-size: 10px;
+                white-space: normal;
+                text-align: center;
+            }
+
+            .viewer-header {
+                flex-basis: 49px;
+                padding: 0 9px 0 13px;
+            }
+
+            .viewer-title {
+                font-size: 13px;
+            }
+
+            .viewer-text {
+                padding: 16px;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <header class="site-header" id="site-header">
+        <img class="brand-logo" src="./logo.png" alt="NdLMS" onerror="this.style.display='none'">
+        <div class="brand-copy">
+            <h1 class="brand-title">NdLMS</h1>
+            <p class="brand-tagline">Thư viện tài liệu học tập trực tuyến</p>
+        </div>
+    </header>
 
-<div class="card">
-  <h2>📤 NdLMS File Uploader</h2>
-  <p>Upload nhiều file → commit vào repo <b>file</b> bằng GitHub Actions</p>
+    <main id="main-content">
+        <div class="table-shell" id="table-shell">
+            <table aria-label="Thư viện tài liệu NdLMS">
+                <thead>
+                    <tr>
+                        <th scope="col">Loại</th>
+                        <th scope="col">Tên</th>
+                    </tr>
+                </thead>
+                <tbody id="file-list">
+                    <tr>
+                        <td colspan="2">
+                            <div class="status">
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
-  <input type="file" id="files" multiple>
+    <section class="viewer" id="viewer" aria-label="Trình xem tài liệu" aria-hidden="true">
+        <header class="viewer-header">
+            <div class="viewer-title" id="viewer-title">Tài liệu</div>
+            <button class="close-viewer" id="close-viewer" type="button" aria-label="Đóng trình xem" title="Đóng">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6 6L18 18M18 6L6 18"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"/>
+                </svg>
+            </button>
+        </header>
+        <div class="viewer-body" id="viewer-body"></div>
+    </section>
 
-  <div class="file-box" id="fileBox">
-    <div class="empty">Chưa có file nào được chọn</div>
-  </div>
+    <script>
+        "use strict";
 
-  <button id="btn" onclick="upload()">💾 Lưu & Upload</button>
+        const MAPS_URL = "https://raw.githubusercontent.com/ntnhan3062/ndlms.doc/main/maps.json";
+        const FILES_RAW_BASE = "https://raw.githubusercontent.com/ntnhan3062/ndlms.doc/main/";
 
-  <div class="progress">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-  <div class="progress-text" id="progressText"></div>
+        const OFFICE_EXTENSIONS = new Set([
+            "doc", "docx", "xls", "xlsx", "ppt", "pptx"
+        ]);
 
-  <div class="links" id="links"></div>
-</div>
+        const IMAGE_EXTENSIONS = new Set([
+            "png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"
+        ]);
 
-<!-- Decode realtime popup -->
-<div class="overlay" id="overlay">
-  <div class="popup" id="popup"></div>
-</div>
+        const TEXT_EXTENSIONS = new Set([
+            "txt", "md", "json", "csv", "xml", "html", "css",
+            "js", "py", "c", "cpp", "java"
+        ]);
 
-<script>
-const fileInput = document.getElementById('files');
-const fileBox = document.getElementById('fileBox');
-const progressBar = document.getElementById('progressBar');
-const progressText = document.getElementById('progressText');
-const overlay = document.getElementById('overlay');
-const popup = document.getElementById('popup');
-const btn = document.getElementById('btn');
+        const VIDEO_EXTENSIONS = new Set([
+            "mp4", "webm", "ogg"
+        ]);
 
-fileInput.onchange = () => {
-  const fs = [...fileInput.files];
-  if (!fs.length) {
-    fileBox.innerHTML = '<div class="empty">Chưa có file nào được chọn</div>';
-    return;
-  }
-  fileBox.innerHTML = fs.map(f =>
-    `<div class="file">📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`
-  ).join('');
-};
+        const AUDIO_EXTENSIONS = new Set([
+            "mp3", "wav", "m4a", "oga", "ogg"
+        ]);
 
-function setProgress(p, text) {
-  progressBar.style.width = p + '%';
-  progressText.innerText = text;
-}
+        const listElement = document.getElementById("file-list");
+        const tableShell = document.getElementById("table-shell");
+        const siteHeader = document.getElementById("site-header");
+        const mainContent = document.getElementById("main-content");
+        const viewer = document.getElementById("viewer");
+        const viewerTitle = document.getElementById("viewer-title");
+        const viewerBody = document.getElementById("viewer-body");
+        const closeViewerButton = document.getElementById("close-viewer");
 
-function logDecode(text) {
-  overlay.style.display = 'flex';
-  popup.textContent += text + "\n\n";
-}
+        let files = [];
+        let activeFile = null;
+        let previousBodyOverflow = "";
+        let loading = false;
 
-async function upload() {
-  const files = [...fileInput.files];
-  if (!files.length) return alert('Chưa chọn file');
+        function makeSvgIcon() {
+            return `
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.7"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z"/>
+                    <path d="M13 3v7h7M8 14h8M8 17h6"/>
+                </svg>
+            `;
+        }
 
-  btn.disabled = true;
-  popup.textContent = '';
-  setProgress(5, 'Chuẩn bị dữ liệu…');
+        function getExtension(fileName) {
+            const lastPart = String(fileName || "").split("/").pop();
+            const dot = lastPart.lastIndexOf(".");
 
-  const payload = [];
-  let done = 0;
+            return dot < 0
+                ? ""
+                : lastPart.slice(dot + 1).toLowerCase();
+        }
 
-  for (const f of files) {
-    const buf = await f.arrayBuffer();
-    const bytes = new Uint8Array(buf);
+        function encodeFilePath(fileName) {
+            return String(fileName)
+                .split("/")
+                .map(segment => encodeURIComponent(segment))
+                .join("/");
+        }
 
-    let preview;
-    try {
-      preview = new TextDecoder().decode(bytes.slice(0, 300));
-    } catch {
-      preview = '[Binary data]';
-    }
+        function getFileUrl(file) {
+            return FILES_RAW_BASE + encodeFilePath(file.fileName);
+        }
 
-    logDecode(
-`📄 FILE: ${f.name}
-📦 SIZE: ${f.size} bytes
-🧪 DECODE PREVIEW (300 bytes):
-${preview}
---------------------------------`
-    );
+        function showListError() {
+            listElement.replaceChildren();
 
-    payload.push({
-      name: f.name,
-      content: btoa(String.fromCharCode(...bytes))
-    });
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 2;
 
-    done++;
-    setProgress(
-      5 + Math.round(done / files.length * 40),
-      `Đã xử lý ${done}/${files.length} file`
-    );
+            const status = document.createElement("div");
+            status.className = "status error";
+            status.appendChild(
+                document.createTextNode("Có lỗi xảy ra! Vui lòng thử lại.")
+            );
 
-    // await new Promise(r => setTimeout(r, 500));
-  }
+            const retry = document.createElement("button");
+            retry.className = "retry-button";
+            retry.type = "button";
+            retry.textContent = "Thử lại";
+            retry.addEventListener("click", loadFiles);
 
-  try {
-    setProgress(55, 'Gửi workflow GitHub Actions…');
+            status.appendChild(document.createElement("br"));
+            status.appendChild(retry);
 
-    await fetch(
-      'https://api.github.com/repos/ntnhan306/ndlms/actions/workflows/upload.yml/dispatches',
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/vnd.github+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ref: 'main',
-          inputs: { files: JSON.stringify(payload) }
-        })
-      }
-    );
+            cell.appendChild(status);
+            row.appendChild(cell);
+            listElement.appendChild(row);
+        }
 
-    setProgress(100, 'Hoàn tất – workflow đang chạy');
-    setTimeout(() => overlay.style.display = 'none', 1500);
+        function showLoading() {
+            listElement.replaceChildren();
 
-    document.getElementById('links').innerHTML = files.map(f =>
-      `<a target="_blank"
-         href="https://raw.githubusercontent.com/ntnhan306/file/main/${f.name}">
-         🔗 ${f.name}
-       </a>`
-    ).join('');
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 2;
 
-  } catch (e) {
-    alert('Upload thất bại');
-    setProgress(0, '');
-    overlay.style.display = 'none';
-  }
+            const status = document.createElement("div");
+            status.className = "status";
 
-  btn.disabled = false;
-}
-</script>
+            const spinner = document.createElement("div");
+            spinner.className = "loading-spinner";
 
+            status.appendChild(spinner);
+            cell.appendChild(status);
+            row.appendChild(cell);
+            listElement.appendChild(row);
+        }
+
+        function renderFiles() {
+            listElement.replaceChildren();
+
+            if (!files.length) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 2;
+
+                const status = document.createElement("div");
+                status.className = "status";
+                status.textContent = "Chưa có tài liệu trong danh sách.";
+
+                cell.appendChild(status);
+                row.appendChild(cell);
+                listElement.appendChild(row);
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            files.forEach(file => {
+                const row = document.createElement("tr");
+
+                const typeCell = document.createElement("td");
+                const badge = document.createElement("span");
+
+                badge.className = "type-badge" +
+                    (file.type === "Lời giải" ? " answer" : "");
+
+                badge.textContent = file.type || "Đề";
+                typeCell.appendChild(badge);
+                row.appendChild(typeCell);
+
+                const nameCell = document.createElement("td");
+                const nameButton = document.createElement("button");
+
+                nameButton.className = "file-name-button";
+                nameButton.type = "button";
+                nameButton.title = "Mở " +
+                    (file.displayName || file.fileName);
+
+                const icon = document.createElement("span");
+                icon.className = "file-icon";
+                icon.innerHTML = makeSvgIcon();
+                nameButton.appendChild(icon);
+
+                const textWrap = document.createElement("span");
+                textWrap.className = "file-text";
+
+                const title = document.createElement("span");
+                title.className = "file-title";
+                title.textContent = file.displayName ||
+                    file.fileName ||
+                    "Tài liệu";
+
+                textWrap.appendChild(title);
+
+                if (file.subject) {
+                    const subtitle = document.createElement("span");
+                    subtitle.className = "file-subtitle";
+                    subtitle.textContent = file.subject;
+                    textWrap.appendChild(subtitle);
+                }
+
+                nameButton.appendChild(textWrap);
+                nameButton.addEventListener("click", () => openFile(file));
+
+                nameCell.appendChild(nameButton);
+                row.appendChild(nameCell);
+                fragment.appendChild(row);
+            });
+
+            listElement.appendChild(fragment);
+
+            tableShell.classList.remove("table-opening");
+            void tableShell.offsetWidth;
+            tableShell.classList.add("table-opening");
+        }
+
+        async function loadFiles() {
+            if (loading) {
+                return;
+            }
+
+            loading = true;
+            showLoading();
+
+            try {
+                const response = await fetch(
+                    MAPS_URL + "?t=" + Date.now(),
+                    { cache: "no-store" }
+                );
+
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+
+                const data = await response.json();
+
+                if (!data || !Array.isArray(data.files)) {
+                    throw new Error("Invalid maps.json");
+                }
+
+                files = data.files.filter(file =>
+                    file &&
+                    typeof file.fileName === "string" &&
+                    file.fileName.trim() !== ""
+                );
+
+                renderFiles();
+
+                const requestedId = new URLSearchParams(
+                    window.location.search
+                ).get("id");
+
+                if (requestedId) {
+                    const target = files.find(
+                        file => file.id === requestedId
+                    );
+
+                    if (target) {
+                        openFile(target, false);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                showListError();
+            } finally {
+                loading = false;
+            }
+        }
+
+        function showViewerMessage(message, fileUrl) {
+            viewerBody.replaceChildren();
+            viewerBody.style.display = "flex";
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "viewer-message";
+
+            const text = document.createElement("div");
+            text.textContent = message;
+            wrapper.appendChild(text);
+
+            if (fileUrl) {
+                const link = document.createElement("a");
+                link.href = fileUrl;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = "Mở hoặc tải file gốc";
+                wrapper.appendChild(link);
+            }
+
+            viewerBody.appendChild(wrapper);
+        }
+
+        function openFile(file, updateUrl = true) {
+            if (!file || !file.fileName) {
+                return;
+            }
+
+            activeFile = file;
+
+            siteHeader.style.display = "none";
+            mainContent.style.display = "none";
+
+            viewer.classList.add("active");
+            viewer.setAttribute("aria-hidden", "false");
+
+            viewerTitle.textContent = file.displayName || file.fileName;
+            viewerTitle.title = file.displayName || file.fileName;
+
+            viewerBody.replaceChildren();
+            viewerBody.style.display = "flex";
+
+            previousBodyOverflow = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+
+            if (updateUrl && file.id) {
+                const url = new URL(window.location.href);
+                url.searchParams.set("id", file.id);
+
+                history.pushState(
+                    { fileId: file.id },
+                    "",
+                    url
+                );
+            }
+
+            const fileUrl = getFileUrl(file);
+            const extension = getExtension(file.fileName);
+
+            if (OFFICE_EXTENSIONS.has(extension)) {
+                const iframe = document.createElement("iframe");
+
+                iframe.className = "viewer-frame";
+                iframe.title = file.displayName || file.fileName;
+                iframe.referrerPolicy = "no-referrer";
+
+                iframe.src =
+                    "https://view.officeapps.live.com/op/embed.aspx?src=" +
+                    encodeURIComponent(fileUrl);
+
+                viewerBody.appendChild(iframe);
+                return;
+            }
+
+            if (extension === "pdf") {
+                const iframe = document.createElement("iframe");
+
+                iframe.className = "viewer-frame";
+                iframe.title = file.displayName || file.fileName;
+                iframe.src = fileUrl;
+
+                viewerBody.appendChild(iframe);
+                return;
+            }
+
+            if (IMAGE_EXTENSIONS.has(extension)) {
+                const image = document.createElement("img");
+
+                image.className = "viewer-image";
+                image.alt = file.displayName || file.fileName;
+                image.src = fileUrl;
+
+                image.addEventListener(
+                    "error",
+                    () => showViewerMessage(
+                        "Không thể tải hình ảnh này.",
+                        fileUrl
+                    ),
+                    { once: true }
+                );
+
+                viewerBody.appendChild(image);
+                return;
+            }
+
+            if (VIDEO_EXTENSIONS.has(extension)) {
+                const video = document.createElement("video");
+
+                video.className = "viewer-frame";
+                video.controls = true;
+                video.src = fileUrl;
+
+                viewerBody.appendChild(video);
+                return;
+            }
+
+            if (AUDIO_EXTENSIONS.has(extension)) {
+                const audio = document.createElement("audio");
+
+                audio.controls = true;
+                audio.src = fileUrl;
+                audio.style.width = "min(90%, 650px)";
+                audio.style.margin = "auto";
+
+                viewerBody.appendChild(audio);
+
+                audio.addEventListener(
+                    "error",
+                    () => showViewerMessage(
+                        "Không thể phát file âm thanh này.",
+                        fileUrl
+                    ),
+                    { once: true }
+                );
+
+                return;
+            }
+
+            if (TEXT_EXTENSIONS.has(extension)) {
+                const pre = document.createElement("pre");
+
+                pre.className = "viewer-text";
+                pre.textContent = "Đang tải nội dung…";
+                viewerBody.appendChild(pre);
+
+                fetch(fileUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("HTTP " + response.status);
+                        }
+
+                        return response.text();
+                    })
+                    .then(text => {
+                        if (
+                            activeFile === file &&
+                            viewer.classList.contains("active")
+                        ) {
+                            pre.textContent = text;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+
+                        showViewerMessage(
+                            "Không thể hiển thị nội dung file này trong trình duyệt.",
+                            fileUrl
+                        );
+                    });
+
+                return;
+            }
+
+            showViewerMessage(
+                "Định dạng này chưa được hỗ trợ xem trực tiếp trên NdLMS.",
+                fileUrl
+            );
+        }
+
+        function closeViewer(updateUrl = true) {
+            if (!viewer.classList.contains("active")) {
+                return;
+            }
+
+            viewer.classList.remove("active");
+            viewer.setAttribute("aria-hidden", "true");
+
+            viewerBody.replaceChildren();
+            viewerBody.style.display = "flex";
+
+            siteHeader.style.display = "";
+            mainContent.style.display = "";
+
+            document.body.style.overflow = previousBodyOverflow;
+            activeFile = null;
+
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete("id");
+
+                history.pushState({}, "", url);
+            }
+        }
+
+        closeViewerButton.addEventListener(
+            "click",
+            () => closeViewer()
+        );
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                closeViewer();
+            }
+        });
+
+        window.addEventListener("popstate", () => {
+            const requestedId = new URLSearchParams(
+                window.location.search
+            ).get("id");
+
+            if (!requestedId) {
+                closeViewer(false);
+                return;
+            }
+
+            const target = files.find(
+                file => file.id === requestedId
+            );
+
+            if (target) {
+                openFile(target, false);
+            }
+        });
+
+        loadFiles();
+    </script>
 </body>
 </html>
