@@ -502,7 +502,10 @@
 
         .viewer-message {
             display: flex;
+            width: 100%;
             min-height: 100%;
+            flex: 1 0 100%;
+            box-sizing: border-box;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -524,6 +527,11 @@
         .viewer-warning-icon svg {
             width: 42px;
             height: 42px;
+        }
+
+        .viewer.missing-file .viewer-file-icon {
+            color: #d92d20;
+            background: #fff0f0;
         }
 
         .viewer-message a {
@@ -673,7 +681,6 @@
             <span>Sao chép liên kết xem file</span>
         </button>
     </div>
-
     <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
 
     <section class="viewer" id="viewer" aria-label="Trình xem tài liệu" aria-hidden="true">
@@ -1037,13 +1044,57 @@
         window.addEventListener("resize", hideFileContextMenu);
         window.addEventListener("scroll", hideFileContextMenu, true);
 
+        function showDirectLinkLoading() {
+            siteHeader.style.display = "none";
+            mainContent.style.display = "none";
+            viewer.classList.add("active");
+            viewer.setAttribute("aria-hidden", "false");
+            viewerTitle.textContent = "Đang mở tài liệu…";
+            viewerTitle.title = "Đang mở tài liệu…";
+            viewerFileIcon.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                    <path d="M13 3v7h7M9 14l6 5m0-5-6 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            `;
+            closeViewerButton.style.display = "none";
+            downloadViewerButton.style.display = "none";
+            viewerBody.replaceChildren();
+            viewerBody.style.display = "flex";
+
+            const status = document.createElement("div");
+            status.className = "viewer-message";
+
+            const spinner = document.createElement("div");
+            spinner.className = "loading-spinner";
+
+            const text = document.createElement("div");
+            text.textContent = "Đang kiểm tra và mở tài liệu…";
+
+            status.appendChild(spinner);
+            status.appendChild(text);
+            viewerBody.appendChild(status);
+
+            previousBodyOverflow = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+        }
+
         async function loadFiles() {
             if (loading) {
                 return;
             }
 
             loading = true;
-            showLoading();
+
+            const requestedId = new URLSearchParams(
+                window.location.search
+            ).get("id");
+
+            if (requestedId) {
+                showDirectLinkLoading();
+            } else {
+                showLoading();
+            }
 
             try {
                 const response = await fetch(
@@ -1067,18 +1118,24 @@
                     file.fileName.trim() !== ""
                 );
 
-                renderFiles();
-
-                const requestedId = new URLSearchParams(
-                    window.location.search
-                ).get("id");
-
                 if (requestedId) {
                     await openFileById(requestedId);
+                    return;
                 }
+
+                renderFiles();
             } catch (error) {
                 console.error(error);
-                showListError();
+
+                if (requestedId) {
+                    showViewerMessage("Không thể tải thông tin tài liệu. Vui lòng thử lại sau.");
+                    viewerTitle.textContent = "Không thể mở tài liệu";
+                    viewerTitle.title = "Không thể mở tài liệu";
+                    closeViewerButton.style.display = "none";
+                    downloadViewerButton.style.display = "none";
+                } else {
+                    showListError();
+                }
             } finally {
                 loading = false;
             }
@@ -1109,6 +1166,7 @@
 
         function showMissingFile() {
             activeFile = null;
+            viewer.classList.add("missing-file");
             siteHeader.style.display = "none";
             mainContent.style.display = "none";
             viewer.classList.add("active");
@@ -1131,9 +1189,8 @@
             warning.className = "viewer-warning-icon";
             warning.innerHTML = `
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
-                          stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-                    <path d="M12 9v4.5m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                    <path d="M13 3v7h7M9 14l6 5m0-5-6 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             `;
 
@@ -1178,6 +1235,7 @@
             }
 
             activeFile = file;
+            viewer.classList.remove("missing-file");
 
             siteHeader.style.display = "none";
             mainContent.style.display = "none";
@@ -1404,6 +1462,12 @@
 
             openFileById(requestedId);
         });
+
+        const initialFileId = new URLSearchParams(window.location.search).get("id");
+
+        if (initialFileId) {
+            showDirectLinkLoading();
+        }
 
         loadFiles();
     </script>
