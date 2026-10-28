@@ -757,6 +757,29 @@
             box-shadow: 0 2px 9px rgba(16, 24, 40, .18);
         }
 
+        .pdf-page-canvas.zoom-arrive {
+            animation: pdf-page-zoom-arrive 180ms cubic-bezier(.2, .75, .25, 1) both;
+            transform-origin: center top;
+            backface-visibility: hidden;
+        }
+
+        @keyframes pdf-page-zoom-arrive {
+            from {
+                opacity: .9;
+                transform: scale(.985);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .pdf-page-canvas.zoom-arrive {
+                animation: none;
+            }
+        }
+
         .viewer-frame {
             display: block;
             width: 100%;
@@ -1994,8 +2017,11 @@
 
                 async function renderPdfPages(zoomPercent) {
                     const generation = ++renderGeneration;
-                    scrollArea.replaceChildren();
-                    pageCanvases.length = 0;
+                    const keepOldPagesVisible = pageCanvases.length > 0;
+                    const previousScrollTop = scrollArea.scrollTop;
+                    const previousScrollLeft = scrollArea.scrollLeft;
+                    const newCanvases = [];
+                    const fragment = document.createDocumentFragment();
 
                     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
                         if (generation !== renderGeneration || activeFile !== file || !viewer.classList.contains("active")) {
@@ -2025,8 +2051,13 @@
                         canvas.style.maxWidth = "none";
                         canvas.setAttribute("aria-label", "Trang " + pageNumber);
 
-                        pageCanvases.push(canvas);
-                        scrollArea.appendChild(canvas);
+                        newCanvases.push(canvas);
+                        if (keepOldPagesVisible) {
+                            fragment.appendChild(canvas);
+                        } else {
+                            pageCanvases.push(canvas);
+                            scrollArea.appendChild(canvas);
+                        }
 
                         await page.render({
                             canvasContext: context,
@@ -2035,6 +2066,18 @@
                                 ? [outputScale, 0, 0, outputScale, 0, 0]
                                 : null
                         }).promise;
+                    }
+
+                    if (generation !== renderGeneration || activeFile !== file || !viewer.classList.contains("active")) {
+                        return;
+                    }
+
+                    if (keepOldPagesVisible) {
+                        pageCanvases.splice(0, pageCanvases.length, ...newCanvases);
+                        scrollArea.replaceChildren(fragment);
+                        scrollArea.scrollTop = previousScrollTop;
+                        scrollArea.scrollLeft = previousScrollLeft;
+                        newCanvases.forEach(canvas => canvas.classList.add("zoom-arrive"));
                     }
                 }
 
@@ -2046,12 +2089,14 @@
                     cancelAnimationFrame(scrollSyncFrame);
                     scrollSyncFrame = requestAnimationFrame(() => {
                         const areaRect = scrollArea.getBoundingClientRect();
+                        const middleY = areaRect.top + areaRect.height / 2;
                         let closestPage = 1;
                         let closestDistance = Infinity;
 
                         pageCanvases.forEach((canvas, index) => {
                             const rect = canvas.getBoundingClientRect();
-                            const distance = Math.abs(rect.top - areaRect.top - 18);
+                            const pageMiddleY = rect.top + rect.height / 2;
+                            const distance = Math.abs(pageMiddleY - middleY);
                             if (distance < closestDistance) {
                                 closestDistance = distance;
                                 closestPage = index + 1;
