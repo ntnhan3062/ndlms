@@ -195,6 +195,8 @@
             color: var(--blue);
         }
 
+
+
         .file-context-menu {
             position: fixed;
             z-index: 1000;
@@ -467,8 +469,127 @@
             display: flex;
             flex: 1;
             min-height: 0;
+            flex-direction: column;
+            overflow: hidden;
+            background: #e9edf3;
+        }
+
+        .viewer-loading {
+            display: flex;
+            width: 100%;
+            min-height: 100%;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 24px;
+            color: #667085;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .viewer-content-area {
+            position: relative;
+            display: flex;
+            flex: 1;
+            min-height: 0;
             overflow: auto;
             background: #e9edf3;
+        }
+
+        .pdf-toolbar {
+            display: flex;
+            flex: 0 0 48px;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 0 12px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pdf-page-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #667085;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .pdf-page-input {
+            width: 43px;
+            padding: 5px 2px;
+            color: #172033;
+            background: transparent;
+            border: 0;
+            border-radius: 5px;
+            outline: none;
+            font: inherit;
+            text-align: center;
+            appearance: textfield;
+        }
+
+        .pdf-page-input::-webkit-inner-spin-button,
+        .pdf-page-input::-webkit-outer-spin-button {
+            margin: 0;
+            appearance: none;
+        }
+
+        .pdf-page-input:focus {
+            background: #f2f7ff;
+        }
+
+        .pdf-page-total {
+            color: #667085;
+        }
+
+        .pdf-nav-button {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            color: #475467;
+            background: transparent;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .pdf-nav-button:hover:not(:disabled) {
+            color: var(--blue);
+            background: #edf4ff;
+        }
+
+        .pdf-nav-button:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        .pdf-nav-button svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .pdf-scroll-area {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            overflow: auto;
+            padding: 18px 12px 28px;
+            scroll-behavior: smooth;
+        }
+
+        .pdf-page-canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            background: #fff;
+            box-shadow: 0 2px 9px rgba(16, 24, 40, .18);
         }
 
         .viewer-frame {
@@ -631,6 +752,21 @@
             .viewer-text {
                 padding: 16px;
             }
+
+            .pdf-toolbar {
+                flex-basis: 45px;
+                gap: 5px;
+                padding: 0 6px;
+            }
+
+            .pdf-page-input {
+                width: 37px;
+            }
+
+            .pdf-scroll-area {
+                align-items: flex-start;
+                padding: 10px 6px 20px;
+            }
         }
     </style>
 </head>
@@ -709,6 +845,7 @@
         <div class="viewer-body" id="viewer-body"></div>
     </section>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         "use strict";
 
@@ -759,19 +896,42 @@
         let loading = false;
         let downloadInProgress = false;
 
-        function makeSvgIcon() {
-            return `
-                <svg viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.7"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                     aria-hidden="true">
-                    <path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z"/>
-                    <path d="M13 3v7h7M8 14h8M8 17h6"/>
-                </svg>
-            `;
+        function makeSvgIcon(fileName = "") {
+            const extension = getExtension(fileName);
+            const common = `stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"`;
+            let label = "FILE";
+            let shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7M8 14h8M8 17h6" ${common}/>`;
+
+            if (extension === "pdf") {
+                label = "PDF";
+                shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7" ${common}/><path d="M7.5 17v-5h1.7a1.4 1.4 0 0 1 0 2.8H7.5M12 17v-5h1a2.5 2.5 0 0 1 0 5zM17 17v-5h3M17 14h2.5" ${common}/>`;
+            } else if (["doc", "docx"].includes(extension)) {
+                label = "DOC";
+                shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7" ${common}/><path d="m7 13 1 5 1.5-3 1.5 3 1-5M15 13h3M15 15.5h2.5M15 18h3" ${common}/>`;
+            } else if (["xls", "xlsx"].includes(extension)) {
+                label = "XLS";
+                shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7" ${common}/><path d="m7.5 13 4 5m0-5-4 5M14 13h3M14 15.5h3M14 18h3" ${common}/>`;
+            } else if (["ppt", "pptx"].includes(extension)) {
+                label = "PPT";
+                shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7" ${common}/><rect x="7" y="12.5" width="10" height="6" rx="1" ${common}/><path d="M12 12.5v6M9 15.5h6" ${common}/>`;
+            } else if (["txt", "md"].includes(extension)) {
+                label = "TXT";
+                shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7M8 13h8M8 16h8M8 19h5" ${common}/>`;
+            } else if (IMAGE_EXTENSIONS.has(extension)) {
+                label = "IMG";
+                shape = `<rect x="3" y="4" width="18" height="16" rx="2" ${common}/><circle cx="8.5" cy="9" r="1.5" ${common}/><path d="m4 17 5-5 4 4 3-3 4 5" ${common}/>`;
+            } else if (VIDEO_EXTENSIONS.has(extension)) {
+                label = "VID";
+                shape = `<rect x="3" y="5" width="18" height="14" rx="2" ${common}/><path d="m10 9 5 3-5 3z" ${common}/>`;
+            } else if (AUDIO_EXTENSIONS.has(extension)) {
+                label = "AUD";
+                shape = `<path d="M9 18V5l12-2v13" ${common}/><circle cx="6" cy="18" r="3" ${common}/><circle cx="18" cy="16" r="3" ${common}/>`;
+            } else if (["zip", "rar", "7z", "gz"].includes(extension)) {
+                label = "ZIP";
+                shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7M11 11v2h2v2h-2v2h2v2" ${common}/>`;
+            }
+
+            return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${shape}<title>${label}</title></svg>`;
         }
 
         function getExtension(fileName) {
@@ -883,7 +1043,7 @@
 
                 const icon = document.createElement("span");
                 icon.className = "file-icon";
-                icon.innerHTML = makeSvgIcon();
+                icon.innerHTML = makeSvgIcon(file.fileName);
                 nameButton.appendChild(icon);
 
                 const textWrap = document.createElement("span");
@@ -1144,9 +1304,12 @@
         function showViewerMessage(message, fileUrl) {
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
+            viewerBody.style.flexDirection = "column";
 
             const wrapper = document.createElement("div");
             wrapper.className = "viewer-message";
+            wrapper.style.flex = "1";
+            wrapper.style.minHeight = "0";
 
             const text = document.createElement("div");
             text.textContent = message;
@@ -1164,6 +1327,228 @@
             viewerBody.appendChild(wrapper);
         }
 
+        function showViewerLoading(message = "Đang tải file, vui lòng chờ…") {
+            viewerBody.replaceChildren();
+            viewerBody.style.display = "flex";
+            viewerBody.style.flexDirection = "column";
+
+            const loadingPanel = document.createElement("div");
+            loadingPanel.className = "viewer-loading";
+            loadingPanel.id = "viewer-loading-panel";
+
+            const spinner = document.createElement("div");
+            spinner.className = "loading-spinner";
+
+            const label = document.createElement("div");
+            label.textContent = message;
+
+            loadingPanel.appendChild(spinner);
+            loadingPanel.appendChild(label);
+            viewerBody.appendChild(loadingPanel);
+            return loadingPanel;
+        }
+
+        function showIframeWhenLoaded(iframe, message = "Đang tải file, vui lòng chờ…") {
+            const loadingPanel = showViewerLoading(message);
+            iframe.style.display = "none";
+            iframe.addEventListener("load", () => {
+                if (!viewerBody.contains(iframe)) {
+                    return;
+                }
+                loadingPanel.remove();
+                iframe.style.display = "block";
+            }, { once: true });
+            viewerBody.appendChild(iframe);
+        }
+
+        function createPdfToolbar(totalPages, onGoToPage) {
+            const toolbar = document.createElement("div");
+            toolbar.className = "pdf-toolbar";
+            toolbar.setAttribute("aria-label", "Điều khiển trang PDF");
+
+            const previous = document.createElement("button");
+            previous.className = "pdf-nav-button";
+            previous.type = "button";
+            previous.title = "Trang trước";
+            previous.setAttribute("aria-label", "Trang trước");
+            previous.innerHTML = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 5-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+            const counter = document.createElement("div");
+            counter.className = "pdf-page-counter";
+
+            const pageInput = document.createElement("input");
+            pageInput.className = "pdf-page-input";
+            pageInput.type = "number";
+            pageInput.min = "1";
+            pageInput.max = String(totalPages);
+            pageInput.step = "1";
+            pageInput.value = "1";
+            pageInput.setAttribute("aria-label", "Số trang hiện tại");
+            pageInput.title = "Nhập số trang rồi nhấn Enter";
+
+            const total = document.createElement("span");
+            total.className = "pdf-page-total";
+            total.textContent = "/ " + totalPages;
+
+            counter.appendChild(pageInput);
+            counter.appendChild(total);
+
+            const next = document.createElement("button");
+            next.className = "pdf-nav-button";
+            next.type = "button";
+            next.title = "Trang tiếp theo";
+            next.setAttribute("aria-label", "Trang tiếp theo");
+            next.innerHTML = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+            let currentPage = 1;
+
+            function goTo(page) {
+                const pageNumber = Math.max(1, Math.min(totalPages, Number(page) || 1));
+                currentPage = pageNumber;
+                pageInput.value = String(pageNumber);
+                previous.disabled = pageNumber <= 1;
+                next.disabled = pageNumber >= totalPages;
+                onGoToPage(pageNumber);
+            }
+
+            previous.addEventListener("click", () => goTo(currentPage - 1));
+            next.addEventListener("click", () => goTo(currentPage + 1));
+            pageInput.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    goTo(pageInput.value);
+                    pageInput.blur();
+                }
+            });
+            pageInput.addEventListener("change", () => goTo(pageInput.value));
+
+            toolbar.appendChild(previous);
+            toolbar.appendChild(counter);
+            toolbar.appendChild(next);
+            goTo(1);
+
+            return {
+                element: toolbar,
+                setCurrentPage(page) {
+                    currentPage = Math.max(1, Math.min(totalPages, Number(page) || 1));
+                    pageInput.value = String(currentPage);
+                    previous.disabled = currentPage <= 1;
+                    next.disabled = currentPage >= totalPages;
+                }
+            };
+        }
+
+        async function renderPdf(file, fileUrl) {
+            if (!window.pdfjsLib) {
+                showViewerMessage("Không tải được thư viện đọc PDF. Kiểm tra kết nối Internet rồi thử lại.", fileUrl);
+                return;
+            }
+
+            showViewerLoading("Đang tải và xử lý tài liệu PDF…");
+
+            try {
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+                    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+                const pdf = await window.pdfjsLib.getDocument({ url: fileUrl }).promise;
+
+                if (activeFile !== file || !viewer.classList.contains("active")) {
+                    return;
+                }
+
+                viewerBody.replaceChildren();
+                viewerBody.style.display = "flex";
+                viewerBody.style.flexDirection = "column";
+
+                const scrollArea = document.createElement("div");
+                scrollArea.className = "pdf-scroll-area";
+
+                const pageCanvases = [];
+                let isProgrammaticScroll = false;
+                let scrollSyncFrame = 0;
+
+                const toolbar = createPdfToolbar(pdf.numPages, pageNumber => {
+                    const canvas = pageCanvases[pageNumber - 1];
+                    if (canvas) {
+                        isProgrammaticScroll = true;
+                        canvas.scrollIntoView({ behavior: "smooth", block: "start" });
+                        window.setTimeout(() => {
+                            isProgrammaticScroll = false;
+                        }, 350);
+                    }
+                });
+
+                viewerBody.appendChild(toolbar.element);
+                viewerBody.appendChild(scrollArea);
+
+                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                    if (activeFile !== file || !viewer.classList.contains("active")) {
+                        return;
+                    }
+
+                    const page = await pdf.getPage(pageNumber);
+                    const baseViewport = page.getViewport({ scale: 1 });
+                    const availableWidth = Math.max(260, scrollArea.clientWidth - 24);
+                    const scale = Math.min(1.5, availableWidth / baseViewport.width);
+                    const viewport = page.getViewport({ scale });
+                    const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d", { alpha: false });
+
+                    canvas.className = "pdf-page-canvas";
+                    canvas.dataset.pageNumber = String(pageNumber);
+                    canvas.width = Math.floor(viewport.width * outputScale);
+                    canvas.height = Math.floor(viewport.height * outputScale);
+                    canvas.style.width = Math.floor(viewport.width) + "px";
+                    canvas.style.height = Math.floor(viewport.height) + "px";
+                    canvas.setAttribute("aria-label", "Trang " + pageNumber);
+
+                    pageCanvases.push(canvas);
+                    scrollArea.appendChild(canvas);
+
+                    await page.render({
+                        canvasContext: context,
+                        viewport,
+                        transform: outputScale !== 1
+                            ? [outputScale, 0, 0, outputScale, 0, 0]
+                            : null
+                    }).promise;
+                }
+
+                function syncPageFromScroll() {
+                    if (isProgrammaticScroll) {
+                        return;
+                    }
+
+                    cancelAnimationFrame(scrollSyncFrame);
+                    scrollSyncFrame = requestAnimationFrame(() => {
+                        const areaRect = scrollArea.getBoundingClientRect();
+                        let closestPage = 1;
+                        let closestDistance = Infinity;
+
+                        pageCanvases.forEach((canvas, index) => {
+                            const rect = canvas.getBoundingClientRect();
+                            const distance = Math.abs(rect.top - areaRect.top - 18);
+                            if (distance < closestDistance) {
+                                closestDistance = distance;
+                                closestPage = index + 1;
+                            }
+                        });
+
+                        toolbar.setCurrentPage(closestPage);
+                    });
+                }
+
+                scrollArea.addEventListener("scroll", syncPageFromScroll, { passive: true });
+                toolbar.setCurrentPage(1);
+            } catch (error) {
+                console.error("Không thể hiển thị PDF:", error);
+                if (activeFile === file) {
+                    showViewerMessage("Không thể đọc file PDF. File có thể bị lỗi hoặc không cho phép truy cập.", fileUrl);
+                }
+            }
+        }
+
         function showMissingFile() {
             activeFile = null;
             viewer.classList.add("missing-file");
@@ -1173,7 +1558,7 @@
             viewer.setAttribute("aria-hidden", "false");
             viewerTitle.textContent = "Không tìm thấy tài liệu";
             viewerTitle.title = "Không tìm thấy tài liệu";
-            viewerFileIcon.innerHTML = makeSvgIcon();
+            viewerFileIcon.innerHTML = makeSvgIcon("pdf");
             closeViewerButton.style.display = "none";
             downloadViewerButton.style.display = "none";
             viewerBody.replaceChildren();
@@ -1245,7 +1630,7 @@
 
             viewerTitle.textContent = file.displayName || file.fileName;
             viewerTitle.title = file.displayName || file.fileName;
-            viewerFileIcon.innerHTML = makeSvgIcon();
+            viewerFileIcon.innerHTML = makeSvgIcon(file.fileName);
             closeViewerButton.style.display = fromDirectLink ? "none" : "grid";
             downloadViewerButton.style.display = "grid";
             downloadViewerButton.disabled = false;
@@ -1266,23 +1651,16 @@
                 iframe.className = "viewer-frame";
                 iframe.title = file.displayName || file.fileName;
                 iframe.referrerPolicy = "no-referrer";
-
                 iframe.src =
                     "https://view.officeapps.live.com/op/embed.aspx?src=" +
                     encodeURIComponent(fileUrl);
 
-                viewerBody.appendChild(iframe);
+                showIframeWhenLoaded(iframe, "Đang tải tài liệu Office…");
                 return;
             }
 
             if (extension === "pdf") {
-                const iframe = document.createElement("iframe");
-
-                iframe.className = "viewer-frame";
-                iframe.title = file.displayName || file.fileName;
-                iframe.src = fileUrl;
-
-                viewerBody.appendChild(iframe);
+                renderPdf(file, fileUrl);
                 return;
             }
 
