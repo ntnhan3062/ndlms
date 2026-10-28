@@ -8,6 +8,23 @@
     <title>NdLMS — Thư viện tài liệu</title>
     <link rel="icon" href="./Logo.png" type="image/png">
     <style>
+        /* Không cho bôi đen giao diện; vẫn cho chọn nội dung trong ô nhập và văn bản tài liệu. */
+        html,
+        body,
+        body * {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input,
+        textarea,
+        select,
+        [contenteditable="true"],
+        .viewer-text,
+        .viewer-text * {
+            -webkit-user-select: text;
+            user-select: text;
+        }
         :root {
             --blue: #1769e0;
             --blue-dark: #1255b8;
