@@ -153,6 +153,7 @@
 
         tbody tr {
             transition: background .15s ease;
+            cursor: pointer;
         }
 
         tbody tr:hover {
@@ -285,9 +286,64 @@
             width: 33px;
             height: 33px;
             place-items: center;
-            color: var(--blue);
-            background: #edf4ff;
+            color: #526174;
+            background: #eef1f5;
             border-radius: 9px;
+        }
+
+        .file-icon-pdf {
+            color: #e53935;
+            background: #ffebee;
+        }
+
+        .file-icon-word {
+            color: #185abd;
+            background: #e8f0fe;
+        }
+
+        .file-icon-excel {
+            color: #217346;
+            background: #e6f4ea;
+        }
+
+        .file-icon-powerpoint {
+            color: #d24726;
+            background: #fcebe6;
+        }
+
+        .file-icon-text {
+            color: #526174;
+            background: #edf0f4;
+        }
+
+        .file-icon-code {
+            color: #6f42c1;
+            background: #f0eaff;
+        }
+
+        .file-icon-image {
+            color: #8e44ad;
+            background: #f5eafa;
+        }
+
+        .file-icon-video {
+            color: #7c3aed;
+            background: #efe7ff;
+        }
+
+        .file-icon-audio {
+            color: #00838f;
+            background: #e0f7fa;
+        }
+
+        .file-icon-archive {
+            color: #b7791f;
+            background: #fff4d6;
+        }
+
+        .file-icon-other {
+            color: #526174;
+            background: #eef1f5;
         }
 
         .file-icon svg {
@@ -399,8 +455,8 @@
             width: 33px;
             height: 33px;
             place-items: center;
-            color: var(--blue);
-            background: #edf4ff;
+            color: #526174;
+            background: #eef1f5;
             border-radius: 9px;
         }
 
@@ -896,6 +952,41 @@
         let loading = false;
         let downloadInProgress = false;
 
+        function getFileIconClass(fileName = "") {
+            const extension = getExtension(fileName);
+
+            if (extension === "pdf") return "file-icon-pdf";
+            if (["doc", "docx"].includes(extension)) return "file-icon-word";
+            if (["xls", "xlsx"].includes(extension)) return "file-icon-excel";
+            if (["ppt", "pptx"].includes(extension)) return "file-icon-powerpoint";
+            if (IMAGE_EXTENSIONS.has(extension)) return "file-icon-image";
+            if (VIDEO_EXTENSIONS.has(extension)) return "file-icon-video";
+            if (AUDIO_EXTENSIONS.has(extension)) return "file-icon-audio";
+            if (["zip", "rar", "7z", "gz", "tar"].includes(extension)) return "file-icon-archive";
+            if (["js", "py", "c", "cpp", "java", "css", "html", "xml", "json"].includes(extension)) return "file-icon-code";
+            if (["txt", "md", "csv"].includes(extension)) return "file-icon-text";
+
+            return "file-icon-other";
+        }
+
+        function setFileIcon(element, fileName = "") {
+            element.classList.remove(
+                "file-icon-pdf",
+                "file-icon-word",
+                "file-icon-excel",
+                "file-icon-powerpoint",
+                "file-icon-text",
+                "file-icon-code",
+                "file-icon-image",
+                "file-icon-video",
+                "file-icon-audio",
+                "file-icon-archive",
+                "file-icon-other"
+            );
+            element.classList.add(getFileIconClass(fileName));
+            element.innerHTML = makeSvgIcon(fileName);
+        }
+
         function makeSvgIcon(fileName = "") {
             const extension = getExtension(fileName);
             const common = `stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"`;
@@ -1043,7 +1134,7 @@
 
                 const icon = document.createElement("span");
                 icon.className = "file-icon";
-                icon.innerHTML = makeSvgIcon(file.fileName);
+                setFileIcon(icon, file.fileName);
                 nameButton.appendChild(icon);
 
                 const textWrap = document.createElement("span");
@@ -1065,8 +1156,13 @@
                 }
 
                 nameButton.appendChild(textWrap);
-                nameButton.addEventListener("click", () => openFile(file));
-                nameButton.addEventListener("contextmenu", event => {
+                nameButton.addEventListener("click", event => {
+                    event.stopPropagation();
+                    openFile(file);
+                });
+
+                row.addEventListener("click", () => openFile(file));
+                row.addEventListener("contextmenu", event => {
                     event.preventDefault();
                     showFileContextMenu(file, event.clientX, event.clientY);
                 });
@@ -1558,7 +1654,7 @@
             viewer.setAttribute("aria-hidden", "false");
             viewerTitle.textContent = "Không tìm thấy tài liệu";
             viewerTitle.title = "Không tìm thấy tài liệu";
-            viewerFileIcon.innerHTML = makeSvgIcon("pdf");
+            setFileIcon(viewerFileIcon, "missing-file.unknown");
             closeViewerButton.style.display = "none";
             downloadViewerButton.style.display = "none";
             viewerBody.replaceChildren();
@@ -1630,7 +1726,7 @@
 
             viewerTitle.textContent = file.displayName || file.fileName;
             viewerTitle.title = file.displayName || file.fileName;
-            viewerFileIcon.innerHTML = makeSvgIcon(file.fileName);
+            setFileIcon(viewerFileIcon, file.fileName);
             closeViewerButton.style.display = fromDirectLink ? "none" : "grid";
             downloadViewerButton.style.display = "grid";
             downloadViewerButton.disabled = false;
