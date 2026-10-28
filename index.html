@@ -629,6 +629,8 @@
         }
 
         .pdf-toolbar {
+            position: relative;
+            z-index: 2;
             display: flex;
             flex: 0 0 48px;
             align-items: center;
@@ -637,6 +639,7 @@
             padding: 0 12px;
             background: #fff;
             border-bottom: 1px solid var(--border);
+            box-shadow: 0 3px 7px rgba(16, 24, 40, .12);
         }
 
         .pdf-page-counter {
@@ -673,6 +676,38 @@
 
         .pdf-page-total {
             color: #667085;
+        }
+
+        .pdf-zoom-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            white-space: nowrap;
+        }
+
+        .pdf-zoom-input {
+            width: 42px;
+            padding: 4px 0;
+            color: inherit;
+            background: transparent;
+            border: 0;
+            outline: none;
+            box-shadow: none;
+            font: inherit;
+            text-align: right;
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .pdf-zoom-input::-webkit-inner-spin-button,
+        .pdf-zoom-input::-webkit-outer-spin-button {
+            margin: 0;
+            appearance: none;
+        }
+
+        .pdf-zoom-percent {
+            color: #667085;
+            font-size: 13px;
         }
 
         .pdf-nav-button {
@@ -1768,7 +1803,7 @@
             viewerBody.appendChild(iframe);
         }
 
-        function createPdfToolbar(totalPages, onGoToPage) {
+        function createPdfToolbar(totalPages, onGoToPage, onZoomChange) {
             const toolbar = document.createElement("div");
             toolbar.className = "pdf-toolbar";
             toolbar.setAttribute("aria-label", "Điều khiển trang PDF");
@@ -1807,7 +1842,38 @@
             next.setAttribute("aria-label", "Trang tiếp theo");
             next.innerHTML = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
+            const zoomControl = document.createElement("div");
+            zoomControl.className = "pdf-zoom-control";
+            zoomControl.setAttribute("aria-label", "Điều khiển thu phóng PDF");
+
+            function makeZoomButton(title, svg) {
+                const button = document.createElement("button");
+                button.className = "pdf-nav-button";
+                button.type = "button";
+                button.title = title;
+                button.setAttribute("aria-label", title);
+                button.innerHTML = svg;
+                return button;
+            }
+
+            const zoomOut = makeZoomButton("Thu nhỏ 10%", `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2M7.8 10.8h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`);
+            const zoomIn = makeZoomButton("Phóng to 10%", `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2M7.8 10.8h6m-3-3v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`);
+            const zoomReset = makeZoomButton("Đặt lại mức thu phóng 100%", `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`);
+            const zoomInput = document.createElement("input");
+            zoomInput.className = "pdf-zoom-input";
+            zoomInput.type = "number";
+            zoomInput.min = "10";
+            zoomInput.max = "500";
+            zoomInput.step = "10";
+            zoomInput.value = "100";
+            zoomInput.setAttribute("aria-label", "Mức thu phóng phần trăm");
+            zoomInput.title = "Nhập mức thu phóng từ 10% đến 500%";
+            const zoomPercent = document.createElement("span");
+            zoomPercent.className = "pdf-zoom-percent";
+            zoomPercent.textContent = "%";
+
             let currentPage = 1;
+            let currentZoom = 100;
 
             function goTo(page) {
                 const pageNumber = Math.max(1, Math.min(totalPages, Number(page) || 1));
@@ -1816,6 +1882,17 @@
                 previous.disabled = pageNumber <= 1;
                 next.disabled = pageNumber >= totalPages;
                 onGoToPage(pageNumber);
+            }
+
+            function setZoom(value) {
+                const parsed = Number(value);
+                const zoom = Math.max(10, Math.min(500, Math.round((Number.isFinite(parsed) ? parsed : 100) / 10) * 10));
+                currentZoom = zoom;
+                zoomInput.value = String(zoom);
+                zoomOut.disabled = zoom <= 10;
+                zoomIn.disabled = zoom >= 500;
+                zoomReset.disabled = zoom === 100;
+                onZoomChange(zoom);
             }
 
             previous.addEventListener("click", () => goTo(currentPage - 1));
@@ -1828,11 +1905,30 @@
                 }
             });
             pageInput.addEventListener("change", () => goTo(pageInput.value));
+            zoomOut.addEventListener("click", () => setZoom(currentZoom - 10));
+            zoomIn.addEventListener("click", () => setZoom(currentZoom + 10));
+            zoomReset.addEventListener("click", () => setZoom(100));
+            zoomInput.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    setZoom(zoomInput.value);
+                    zoomInput.blur();
+                }
+            });
+            zoomInput.addEventListener("change", () => setZoom(zoomInput.value));
+
+            zoomControl.appendChild(zoomOut);
+            zoomControl.appendChild(zoomIn);
+            zoomControl.appendChild(zoomReset);
+            zoomControl.appendChild(zoomInput);
+            zoomControl.appendChild(zoomPercent);
 
             toolbar.appendChild(previous);
             toolbar.appendChild(counter);
             toolbar.appendChild(next);
+            toolbar.appendChild(zoomControl);
             goTo(1);
+            setZoom(100);
 
             return {
                 element: toolbar,
@@ -1841,6 +1937,9 @@
                     pageInput.value = String(currentPage);
                     previous.disabled = currentPage <= 1;
                     next.disabled = currentPage >= totalPages;
+                },
+                setZoom(value) {
+                    setZoom(value);
                 }
             };
         }
@@ -1873,6 +1972,8 @@
                 const pageCanvases = [];
                 let isProgrammaticScroll = false;
                 let scrollSyncFrame = 0;
+                let renderGeneration = 0;
+                let currentZoom = 100;
 
                 const toolbar = createPdfToolbar(pdf.numPages, pageNumber => {
                     const canvas = pageCanvases[pageNumber - 1];
@@ -1883,43 +1984,58 @@
                             isProgrammaticScroll = false;
                         }, 350);
                     }
+                }, zoom => {
+                    currentZoom = zoom;
+                    renderPdfPages(zoom);
                 });
 
                 viewerBody.appendChild(toolbar.element);
                 viewerBody.appendChild(scrollArea);
 
-                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-                    if (activeFile !== file || !viewer.classList.contains("active")) {
-                        return;
+                async function renderPdfPages(zoomPercent) {
+                    const generation = ++renderGeneration;
+                    scrollArea.replaceChildren();
+                    pageCanvases.length = 0;
+
+                    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                        if (generation !== renderGeneration || activeFile !== file || !viewer.classList.contains("active")) {
+                            return;
+                        }
+
+                        const page = await pdf.getPage(pageNumber);
+                        if (generation !== renderGeneration) {
+                            return;
+                        }
+
+                        const baseViewport = page.getViewport({ scale: 1 });
+                        const availableWidth = Math.max(260, scrollArea.clientWidth - 24);
+                        const fitScale = Math.min(1.5, availableWidth / baseViewport.width);
+                        const scale = fitScale * zoomPercent / 100;
+                        const viewport = page.getViewport({ scale });
+                        const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+                        const canvas = document.createElement("canvas");
+                        const context = canvas.getContext("2d", { alpha: false });
+
+                        canvas.className = "pdf-page-canvas";
+                        canvas.dataset.pageNumber = String(pageNumber);
+                        canvas.width = Math.max(1, Math.floor(viewport.width * outputScale));
+                        canvas.height = Math.max(1, Math.floor(viewport.height * outputScale));
+                        canvas.style.width = Math.floor(viewport.width) + "px";
+                        canvas.style.height = Math.floor(viewport.height) + "px";
+                        canvas.style.maxWidth = "none";
+                        canvas.setAttribute("aria-label", "Trang " + pageNumber);
+
+                        pageCanvases.push(canvas);
+                        scrollArea.appendChild(canvas);
+
+                        await page.render({
+                            canvasContext: context,
+                            viewport,
+                            transform: outputScale !== 1
+                                ? [outputScale, 0, 0, outputScale, 0, 0]
+                                : null
+                        }).promise;
                     }
-
-                    const page = await pdf.getPage(pageNumber);
-                    const baseViewport = page.getViewport({ scale: 1 });
-                    const availableWidth = Math.max(260, scrollArea.clientWidth - 24);
-                    const scale = Math.min(1.5, availableWidth / baseViewport.width);
-                    const viewport = page.getViewport({ scale });
-                    const outputScale = Math.min(window.devicePixelRatio || 1, 2);
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d", { alpha: false });
-
-                    canvas.className = "pdf-page-canvas";
-                    canvas.dataset.pageNumber = String(pageNumber);
-                    canvas.width = Math.floor(viewport.width * outputScale);
-                    canvas.height = Math.floor(viewport.height * outputScale);
-                    canvas.style.width = Math.floor(viewport.width) + "px";
-                    canvas.style.height = Math.floor(viewport.height) + "px";
-                    canvas.setAttribute("aria-label", "Trang " + pageNumber);
-
-                    pageCanvases.push(canvas);
-                    scrollArea.appendChild(canvas);
-
-                    await page.render({
-                        canvasContext: context,
-                        viewport,
-                        transform: outputScale !== 1
-                            ? [outputScale, 0, 0, outputScale, 0, 0]
-                            : null
-                    }).promise;
                 }
 
                 function syncPageFromScroll() {
@@ -1946,6 +2062,62 @@
                     });
                 }
 
+                let lastPinchDistance = 0;
+                let pinchStartZoom = 100;
+                let lastGestureZoomUpdate = 0;
+
+                function distanceBetweenTouches(touchA, touchB) {
+                    const deltaX = touchA.clientX - touchB.clientX;
+                    const deltaY = touchA.clientY - touchB.clientY;
+                    return Math.hypot(deltaX, deltaY);
+                }
+
+                scrollArea.addEventListener("wheel", event => {
+                    if (!event.ctrlKey) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    const now = performance.now();
+                    if (now - lastGestureZoomUpdate < 45) {
+                        return;
+                    }
+                    lastGestureZoomUpdate = now;
+                    const step = event.deltaY < 0 ? 10 : -10;
+                    toolbar.setZoom(currentZoom + step);
+                }, { passive: false });
+
+                scrollArea.addEventListener("touchstart", event => {
+                    if (event.touches.length === 2) {
+                        lastPinchDistance = distanceBetweenTouches(event.touches[0], event.touches[1]);
+                        pinchStartZoom = currentZoom;
+                    }
+                }, { passive: true });
+
+                scrollArea.addEventListener("touchmove", event => {
+                    if (event.touches.length !== 2 || !lastPinchDistance) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    const distance = distanceBetweenTouches(event.touches[0], event.touches[1]);
+                    const ratio = distance / lastPinchDistance;
+                    const now = performance.now();
+                    if (Math.abs(distance - lastPinchDistance) < 3 || now - lastGestureZoomUpdate < 45) {
+                        return;
+                    }
+                    lastGestureZoomUpdate = now;
+                    toolbar.setZoom(pinchStartZoom * ratio);
+                    lastPinchDistance = distance;
+                    pinchStartZoom = currentZoom;
+                }, { passive: false });
+
+                function resetPinch() {
+                    lastPinchDistance = 0;
+                }
+
+                scrollArea.addEventListener("touchend", resetPinch, { passive: true });
+                scrollArea.addEventListener("touchcancel", resetPinch, { passive: true });
                 scrollArea.addEventListener("scroll", syncPageFromScroll, { passive: true });
                 toolbar.setCurrentPage(1);
             } catch (error) {
