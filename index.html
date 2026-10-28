@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
     <title>NdLMS — Thư viện tài liệu</title>
     <link rel="icon" href="./Logo.png" type="image/png">
     <style>
@@ -822,6 +823,243 @@
             .pdf-scroll-area {
                 align-items: flex-start;
                 padding: 10px 6px 20px;
+            }
+        }
+        html {
+            color-scheme: light dark;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --blue: #78aaff;
+                --blue-dark: #9bc0ff;
+                --text: #e5eaf3;
+                --muted: #a4afc0;
+                --border: #303b4c;
+                --page: #111827;
+                --hover: #202d42;
+            }
+
+            body {
+                background: var(--page);
+                color: var(--text);
+            }
+
+            .site-header {
+                background: rgba(17, 24, 39, .96);
+            }
+
+            .table-shell {
+                background: #182231;
+                border-color: var(--border);
+                box-shadow: 0 3px 12px rgba(0, 0, 0, .18);
+            }
+
+            thead {
+                background: #202b3b;
+            }
+
+            th {
+                color: #b4bfd0;
+                border-bottom-color: var(--border);
+            }
+
+            td {
+                border-bottom-color: #2b3545;
+            }
+
+            tbody tr:hover {
+                background: var(--hover);
+            }
+
+            .type-badge {
+                color: #c2ccda;
+                background: #303b4c;
+            }
+
+            .type-badge.answer {
+                color: #7ee0a5;
+                background: #173b30;
+            }
+
+            .file-name-button {
+                color: var(--text);
+            }
+
+            .file-name-button:hover .file-title {
+                color: var(--blue);
+            }
+
+            .file-context-menu {
+                background: #202b3b;
+                border-color: #3a4659;
+                box-shadow: 0 8px 28px rgba(0, 0, 0, .42);
+            }
+
+            .file-context-option {
+                color: #e5eaf3;
+            }
+
+            .file-context-option:hover,
+            .file-context-option:focus-visible {
+                color: #9bc0ff;
+                background: #293b56;
+            }
+
+            .copy-toast {
+                color: #f8fafc;
+                background: #050a12;
+            }
+
+            .file-icon-pdf,
+            .viewer-file-icon.file-icon-pdf {
+                color: #ff7777;
+                background: #48272d;
+            }
+
+            .file-icon-word,
+            .viewer-file-icon.file-icon-word {
+                color: #8db8ff;
+                background: #223b60;
+            }
+
+            .file-icon-excel,
+            .viewer-file-icon.file-icon-excel {
+                color: #73d49a;
+                background: #1e4334;
+            }
+
+            .file-icon-powerpoint,
+            .viewer-file-icon.file-icon-powerpoint {
+                color: #ff987c;
+                background: #4b302b;
+            }
+
+            .file-icon-text,
+            .viewer-file-icon.file-icon-text,
+            .file-icon-other,
+            .viewer-file-icon.file-icon-other {
+                color: #c1ccdb;
+                background: #303b4c;
+            }
+
+            .file-icon-code,
+            .viewer-file-icon.file-icon-code {
+                color: #c0a4ff;
+                background: #392d56;
+            }
+
+            .file-icon-image,
+            .viewer-file-icon.file-icon-image {
+                color: #e0a1ff;
+                background: #492f55;
+            }
+
+            .file-icon-video,
+            .viewer-file-icon.file-icon-video {
+                color: #c1a5ff;
+                background: #392e59;
+            }
+
+            .file-icon-audio,
+            .viewer-file-icon.file-icon-audio {
+                color: #70dce5;
+                background: #1d4148;
+            }
+
+            .file-icon-archive,
+            .viewer-file-icon.file-icon-archive {
+                color: #ffd078;
+                background: #4a3b22;
+            }
+
+            .retry-button {
+                color: #9bc0ff;
+                background: #1b2738;
+                border-color: #3b5274;
+            }
+
+            .retry-button:hover {
+                background: #293b56;
+            }
+
+            .loading-spinner {
+                border-color: #35445b;
+                border-top-color: var(--blue);
+            }
+
+            .viewer {
+                color: var(--text);
+                background: #111827;
+            }
+
+            .viewer-header {
+                color: #e5eaf3;
+                background: #182231;
+                border-bottom-color: var(--border);
+            }
+
+            .download-viewer,
+            .close-viewer {
+                color: #c2ccda;
+            }
+
+            .download-viewer:hover {
+                color: #9bc0ff;
+                background: #293b56;
+            }
+
+            .close-viewer:hover {
+                color: #ff8c8c;
+                background: #48272d;
+            }
+
+            .viewer-body,
+            .viewer-content-area {
+                background: #111827;
+            }
+
+            .viewer-loading,
+            .viewer-message {
+                color: #b4bfd0;
+            }
+
+            .pdf-toolbar {
+                color: #e5eaf3;
+                background: #182231;
+                border-bottom-color: var(--border);
+            }
+
+            .pdf-page-counter,
+            .pdf-page-total {
+                color: #b4bfd0;
+            }
+
+            .pdf-page-input {
+                color: #e5eaf3;
+            }
+
+            .pdf-page-input:focus,
+            .pdf-nav-button:hover:not(:disabled) {
+                background: #293b56;
+            }
+
+            .pdf-nav-button {
+                color: #c2ccda;
+            }
+
+            .pdf-scroll-area {
+                background: #111827;
+            }
+
+            .viewer-text {
+                color: #e5eaf3;
+                background: #182231;
+            }
+
+            .viewer.missing-file .viewer-file-icon {
+                color: #ff8c8c;
+                background: #48272d;
             }
         }
     </style>
