@@ -1251,7 +1251,7 @@
                 <div class="viewer-title" id="viewer-title">Tài liệu</div>
             </div>
             <div class="viewer-actions">
-                <button class="download-viewer" id="download-viewer" type="button" aria-label="Tải file xuống" title="Tải xuống">
+                <button class="download-viewer" id="download-viewer" type="button" aria-label="Tải xuống" title="Tải xuống">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 17.5V20h16v-2.5"
                               stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2258,7 +2258,8 @@
             closeViewerButton.style.display = fromDirectLink ? "none" : "grid";
             downloadViewerButton.style.display = "grid";
             downloadViewerButton.disabled = false;
-            downloadViewerButton.title = "Tải xuống " + (file.fileName.split("/").pop());
+            // downloadViewerButton.title = "Tải xuống " + (file.fileName.split("/").pop());
+            downloadViewerButton.title = "Tải xuống";
 
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
