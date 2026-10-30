@@ -8,20 +8,11 @@
     <title>NdLMS — Thư viện tài liệu</title>
     <link rel="icon" href="./Logo.png" type="image/png">
     <style>
-        /* Không cho bôi đen giao diện; vẫn cho chọn nội dung trong ô nhập và văn bản tài liệu. */
-        html,
-        body,
-        body * {
+        html, body, body * {
             -webkit-user-select: none;
             user-select: none;
         }
-
-        input,
-        textarea,
-        select,
-        [contenteditable="true"],
-        .viewer-text,
-        .viewer-text * {
+        input, textarea, select, [contenteditable="true"], .viewer-text, .viewer-text * {
             -webkit-user-select: text;
             user-select: text;
         }
@@ -34,29 +25,23 @@
             --page: #f6f8fb;
             --hover: #f2f7ff;
         }
-
         * {
             box-sizing: border-box;
         }
-
-        html,
-        body {
+        html, body {
             width: 100%;
             min-height: 100%;
             margin: 0;
         }
-
         body {
             font-family: Inter, "Segoe UI", Arial, sans-serif;
             color: var(--text);
             background: var(--page);
             -webkit-font-smoothing: antialiased;
         }
-
         button {
             font: inherit;
         }
-
         .site-header {
             position: sticky;
             top: 0;
@@ -70,7 +55,6 @@
             border-bottom: 1px solid var(--border);
             backdrop-filter: blur(12px);
         }
-
         .brand-logo {
             display: block;
             flex: 0 0 43px;
@@ -79,11 +63,9 @@
             object-fit: contain;
             border-radius: 10px;
         }
-
         .brand-copy {
             min-width: 0;
         }
-
         .brand-title {
             margin: 0;
             font-size: 19px;
@@ -91,20 +73,17 @@
             font-weight: 750;
             letter-spacing: -.35px;
         }
-
         .brand-tagline {
             margin: 3px 0 0;
             color: var(--muted);
             font-size: 11px;
             line-height: 1.35;
         }
-
         main {
             width: min(100%, 1100px);
             margin: 0 auto;
             padding: 22px clamp(12px, 3vw, 28px) 36px;
         }
-
         .table-shell {
             overflow: hidden;
             background: #fff;
@@ -113,33 +92,27 @@
             box-shadow: 0 3px 12px rgba(20, 37, 63, .035);
             transform-origin: top center;
         }
-
         .table-shell.table-opening {
             animation: table-expand .36s cubic-bezier(.2, .75, .25, 1) both;
         }
-
         @keyframes table-expand {
             from {
                 opacity: 0;
                 transform: scaleY(.88) translateY(-7px);
             }
-
             to {
                 opacity: 1;
                 transform: scaleY(1) translateY(0);
             }
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
         }
-
         thead {
             background: #f8fafc;
         }
-
         th {
             height: 43px;
             padding: 0 15px;
@@ -151,33 +124,26 @@
             text-transform: uppercase;
             border-bottom: 1px solid var(--border);
         }
-
-        th:first-child,
-        td:first-child {
+        th:first-child, td:first-child {
             width: 105px;
             text-align: center;
         }
-
         td {
             height: 58px;
             padding: 0 15px;
             font-size: 13px;
             border-bottom: 1px solid #edf0f5;
         }
-
         tbody tr:last-child td {
             border-bottom: 0;
         }
-
         tbody tr {
             transition: background .15s ease;
             cursor: pointer;
         }
-
         tbody tr:hover {
             background: var(--hover);
         }
-
         .type-badge {
             display: inline-flex;
             align-items: center;
@@ -190,12 +156,10 @@
             font-size: 11px;
             white-space: nowrap;
         }
-
         .type-badge.answer {
             color: #147344;
             background: #e9f8ef;
         }
-
         .file-name-button {
             display: flex;
             align-items: center;
@@ -209,13 +173,9 @@
             border: 0;
             cursor: pointer;
         }
-
         .file-name-button:hover .file-title {
             color: var(--blue);
         }
-
-
-
         .file-context-menu {
             position: fixed;
             z-index: 1000;
@@ -227,24 +187,20 @@
             border-radius: 10px;
             box-shadow: 0 8px 28px rgba(16, 24, 40, .16);
         }
-
         .file-context-menu.active {
             display: block;
             animation: context-menu-in .12s ease-out both;
         }
-
         @keyframes context-menu-in {
             from {
                 opacity: 0;
                 transform: translateY(-3px) scale(.98);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
-
         .file-context-option {
             display: flex;
             align-items: center;
@@ -260,20 +216,16 @@
             font-size: 13px;
             cursor: pointer;
         }
-
-        .file-context-option:hover,
-        .file-context-option:focus-visible {
+        .file-context-option:hover, .file-context-option:focus-visible {
             color: var(--blue);
             background: #f2f7ff;
             outline: none;
         }
-
         .file-context-option svg {
             flex: 0 0 17px;
             width: 17px;
             height: 17px;
         }
-
         .copy-toast {
             position: fixed;
             right: 18px;
@@ -292,12 +244,10 @@
             transform: translateY(6px);
             transition: opacity .18s ease, transform .18s ease;
         }
-
         .copy-toast.active {
             opacity: 1;
             transform: translateY(0);
         }
-
         .file-icon {
             display: grid;
             flex: 0 0 33px;
@@ -308,72 +258,58 @@
             background: #eef1f5;
             border-radius: 9px;
         }
-
         .file-icon-pdf {
             color: #e53935;
             background: #ffebee;
         }
-
         .file-icon-word {
             color: #185abd;
             background: #e8f0fe;
         }
-
         .file-icon-excel {
             color: #217346;
             background: #e6f4ea;
         }
-
         .file-icon-powerpoint {
             color: #d24726;
             background: #fcebe6;
         }
-
         .file-icon-text {
             color: #526174;
             background: #edf0f4;
         }
-
         .file-icon-code {
             color: #6f42c1;
             background: #f0eaff;
         }
-
         .file-icon-image {
             color: #8e44ad;
             background: #f5eafa;
         }
-
         .file-icon-video {
             color: #7c3aed;
             background: #efe7ff;
         }
-
         .file-icon-audio {
             color: #00838f;
             background: #e0f7fa;
         }
-
         .file-icon-archive {
             color: #b7791f;
             background: #fff4d6;
         }
-
         .file-icon-other {
             color: #526174;
             background: #eef1f5;
         }
-
         .file-icon svg {
             width: 17px;
             height: 17px;
         }
-
         .file-text {
             display: block;
             min-width: 0;
         }
-
         .file-title {
             display: block;
             overflow-wrap: anywhere;
@@ -382,7 +318,6 @@
             font-weight: 650;
             transition: color .15s ease;
         }
-
         .file-subtitle {
             display: block;
             margin-top: 3px;
@@ -390,7 +325,6 @@
             font-size: 11px;
             line-height: 1.3;
         }
-
         .status {
             padding: 34px 18px;
             color: var(--muted);
@@ -398,11 +332,9 @@
             font-size: 13px;
             line-height: 1.6;
         }
-
         .status.error {
             color: #b42318;
         }
-
         .retry-button {
             margin-top: 12px;
             padding: 8px 13px;
@@ -412,11 +344,9 @@
             border-radius: 8px;
             cursor: pointer;
         }
-
         .retry-button:hover {
             background: #f2f7ff;
         }
-
         .loading-spinner {
             width: 25px;
             height: 25px;
@@ -426,13 +356,11 @@
             border-radius: 50%;
             animation: spin .8s linear infinite;
         }
-
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
         }
-
         .viewer {
             position: fixed;
             inset: 0;
@@ -441,11 +369,9 @@
             flex-direction: column;
             background: #f1f3f6;
         }
-
         .viewer.active {
             display: flex;
         }
-
         .viewer-header {
             display: flex;
             flex: 0 0 54px;
@@ -458,7 +384,6 @@
             background: #fff;
             border-bottom: 1px solid var(--border);
         }
-
         .viewer-heading {
             display: flex;
             align-items: center;
@@ -466,7 +391,6 @@
             min-width: 0;
             flex: 1;
         }
-
         .viewer-file-icon {
             display: grid;
             flex: 0 0 33px;
@@ -477,68 +401,54 @@
             background: #eef1f5;
             border-radius: 9px;
         }
-
         .viewer-file-icon svg {
             width: 17px;
             height: 17px;
         }
-
-        /* Giữ đúng màu icon của từng loại file trong thanh xem tài liệu ở chế độ sáng. */
         .viewer-file-icon.file-icon-pdf {
             color: #e53935;
             background: #ffebee;
         }
-
         .viewer-file-icon.file-icon-word {
             color: #185abd;
             background: #e8f0fe;
         }
-
         .viewer-file-icon.file-icon-excel {
             color: #217346;
             background: #e6f4ea;
         }
-
         .viewer-file-icon.file-icon-powerpoint {
             color: #d24726;
             background: #fcebe6;
         }
-
         .viewer-file-icon.file-icon-text {
             color: #526174;
             background: #edf0f4;
         }
-
         .viewer-file-icon.file-icon-code {
             color: #6f42c1;
             background: #f0eaff;
         }
-
         .viewer-file-icon.file-icon-image {
             color: #8e44ad;
             background: #f5eafa;
         }
-
         .viewer-file-icon.file-icon-video {
             color: #7c3aed;
             background: #efe7ff;
         }
-
         .viewer-file-icon.file-icon-audio {
             color: #00838f;
             background: #e0f7fa;
         }
-
         .viewer-file-icon.file-icon-archive {
             color: #b7791f;
             background: #fff4d6;
         }
-
         .viewer-file-icon.file-icon-other {
             color: #526174;
             background: #eef1f5;
         }
-
         .viewer-title {
             overflow: hidden;
             min-width: 0;
@@ -547,16 +457,13 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
         .viewer-actions {
             display: flex;
             flex: 0 0 auto;
             align-items: center;
             gap: 5px;
         }
-
-        .download-viewer,
-        .close-viewer {
+        .download-viewer, .close-viewer {
             display: grid;
             flex: 0 0 36px;
             width: 36px;
@@ -568,32 +475,26 @@
             border-radius: 9px;
             cursor: pointer;
         }
-
         .download-viewer:hover {
             color: var(--blue);
             background: #edf4ff;
         }
-
         .download-viewer svg {
             width: 20px;
             height: 20px;
         }
-
         .download-viewer:disabled {
             cursor: wait;
             opacity: .55;
         }
-
         .close-viewer:hover {
             color: #b42318;
             background: #fff0f0;
         }
-
         .close-viewer svg {
             width: 21px;
             height: 21px;
         }
-
         .viewer-body {
             position: relative;
             display: flex;
@@ -603,7 +504,6 @@
             overflow: hidden;
             background: #e9edf3;
         }
-
         .viewer-loading {
             display: flex;
             width: 100%;
@@ -618,7 +518,6 @@
             text-align: center;
             font-size: 13px;
         }
-
         .viewer-content-area {
             position: relative;
             display: flex;
@@ -627,7 +526,6 @@
             overflow: auto;
             background: #e9edf3;
         }
-
         .pdf-toolbar {
             position: relative;
             z-index: 2;
@@ -641,7 +539,6 @@
             border-bottom: 1px solid var(--border);
             box-shadow: 0 3px 7px rgba(16, 24, 40, .12);
         }
-
         .pdf-page-counter {
             display: inline-flex;
             align-items: center;
@@ -650,7 +547,6 @@
             font-size: 13px;
             white-space: nowrap;
         }
-
         .pdf-page-input {
             width: 43px;
             padding: 5px 2px;
@@ -663,28 +559,22 @@
             text-align: center;
             appearance: textfield;
         }
-
-        .pdf-page-input::-webkit-inner-spin-button,
-        .pdf-page-input::-webkit-outer-spin-button {
+        .pdf-page-input::-webkit-inner-spin-button, .pdf-page-input::-webkit-outer-spin-button {
             margin: 0;
             appearance: none;
         }
-
         .pdf-page-input:focus {
             background: #f2f7ff;
         }
-
         .pdf-page-total {
             color: #667085;
         }
-
         .pdf-zoom-control {
             display: inline-flex;
             align-items: center;
             gap: 2px;
             white-space: nowrap;
         }
-
         .pdf-zoom-input {
             width: 42px;
             padding: 4px 0;
@@ -698,18 +588,14 @@
             appearance: textfield;
             -moz-appearance: textfield;
         }
-
-        .pdf-zoom-input::-webkit-inner-spin-button,
-        .pdf-zoom-input::-webkit-outer-spin-button {
+        .pdf-zoom-input::-webkit-inner-spin-button, .pdf-zoom-input::-webkit-outer-spin-button {
             margin: 0;
             appearance: none;
         }
-
         .pdf-zoom-percent {
             color: #667085;
             font-size: 13px;
         }
-
         .pdf-nav-button {
             display: grid;
             width: 34px;
@@ -721,22 +607,18 @@
             border-radius: 8px;
             cursor: pointer;
         }
-
         .pdf-nav-button:hover:not(:disabled) {
             color: var(--blue);
             background: #edf4ff;
         }
-
         .pdf-nav-button:disabled {
             opacity: .35;
             cursor: default;
         }
-
         .pdf-nav-button svg {
             width: 19px;
             height: 19px;
         }
-
         .pdf-scroll-area {
             display: flex;
             flex: 1;
@@ -748,7 +630,6 @@
             padding: 18px 12px 28px;
             scroll-behavior: smooth;
         }
-
         .pdf-page-canvas {
             display: block;
             max-width: 100%;
@@ -756,13 +637,11 @@
             background: #fff;
             box-shadow: 0 2px 9px rgba(16, 24, 40, .18);
         }
-
         .pdf-page-canvas.zoom-arrive {
             animation: pdf-page-zoom-arrive 180ms cubic-bezier(.2, .75, .25, 1) both;
             transform-origin: center top;
             backface-visibility: hidden;
         }
-
         @keyframes pdf-page-zoom-arrive {
             from {
                 opacity: .9;
@@ -773,13 +652,11 @@
                 transform: scale(1);
             }
         }
-
         @media (prefers-reduced-motion: reduce) {
             .pdf-page-canvas.zoom-arrive {
                 animation: none;
             }
         }
-
         .viewer-frame {
             display: block;
             width: 100%;
@@ -788,7 +665,6 @@
             background: #fff;
             border: 0;
         }
-
         .viewer-image {
             display: block;
             max-width: 100%;
@@ -796,7 +672,6 @@
             margin: auto;
             object-fit: contain;
         }
-
         .viewer-text {
             width: min(100%, 1100px);
             min-height: 100%;
@@ -808,7 +683,6 @@
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
-
         .viewer-message {
             display: flex;
             width: 100%;
@@ -824,7 +698,6 @@
             text-align: center;
             font-size: 13px;
         }
-
         .viewer-warning-icon {
             display: grid;
             width: 48px;
@@ -832,125 +705,99 @@
             place-items: center;
             color: #d92d20;
         }
-
         .viewer-warning-icon svg {
             width: 42px;
             height: 42px;
         }
-
         .viewer.missing-file .viewer-file-icon {
             color: #d92d20;
             background: #fff0f0;
         }
-
         .viewer-message a {
             color: var(--blue);
             font-weight: 650;
         }
-
         @media (max-width: 600px) {
             .site-header {
                 min-height: 59px;
                 padding: 8px 12px;
             }
-
             .brand-logo {
                 flex-basis: 38px;
                 width: 38px;
                 height: 38px;
             }
-
             .brand-title {
                 font-size: 17px;
             }
-
             .brand-tagline {
                 font-size: 10px;
             }
-
             main {
                 padding: 17px 9px 26px;
             }
-
             th {
                 padding: 0 9px;
                 font-size: 10px;
             }
-
             th:first-child,
             td:first-child {
                 width: 82px;
             }
-
             td {
                 padding: 0 8px;
             }
-
             .file-name-button {
                 gap: 8px;
             }
-
             .file-icon {
                 flex-basis: 29px;
                 width: 29px;
                 height: 29px;
             }
-
             .file-title {
                 font-size: 12px;
             }
-
             .file-subtitle {
                 font-size: 10px;
             }
-
             .type-badge {
                 padding: 4px 6px;
                 font-size: 10px;
                 white-space: normal;
                 text-align: center;
             }
-
             .viewer-header {
                 flex-basis: 49px;
                 padding: 0 9px 0 13px;
             }
-
             .viewer-title {
                 font-size: 13px;
             }
-
             .viewer-file-icon {
                 flex-basis: 29px;
                 width: 29px;
                 height: 29px;
             }
-
             .viewer-actions {
                 gap: 0;
             }
-
-            .download-viewer,
-            .close-viewer {
+            .download-viewer, .close-viewer {
                 flex-basis: 34px;
                 width: 34px;
                 height: 34px;
             }
-
             .viewer-text {
                 padding: 16px;
             }
-
             .pdf-toolbar {
                 flex-basis: 45px;
                 gap: 5px;
                 padding: 0 6px;
             }
-
             .pdf-page-input {
                 width: 37px;
             }
-
             .pdf-scroll-area {
                 align-items: flex-start;
                 padding: 10px 6px 20px;
@@ -959,7 +806,6 @@
         html {
             color-scheme: light dark;
         }
-
         @media (prefers-color-scheme: dark) {
             :root {
                 --blue: #78aaff;
@@ -970,224 +816,163 @@
                 --page: #111827;
                 --hover: #202d42;
             }
-
             body {
                 background: var(--page);
                 color: var(--text);
             }
-
             .site-header {
                 background: rgba(17, 24, 39, .96);
             }
-
             .table-shell {
                 background: #182231;
                 border-color: var(--border);
                 box-shadow: 0 3px 12px rgba(0, 0, 0, .18);
             }
-
             thead {
                 background: #202b3b;
             }
-
             th {
                 color: #b4bfd0;
                 border-bottom-color: var(--border);
             }
-
             td {
                 border-bottom-color: #2b3545;
             }
-
             tbody tr:hover {
                 background: var(--hover);
             }
-
             .type-badge {
                 color: #c2ccda;
                 background: #303b4c;
             }
-
             .type-badge.answer {
                 color: #7ee0a5;
                 background: #173b30;
             }
-
             .file-name-button {
                 color: var(--text);
             }
-
             .file-name-button:hover .file-title {
                 color: var(--blue);
             }
-
             .file-context-menu {
                 background: #202b3b;
                 border-color: #3a4659;
                 box-shadow: 0 8px 28px rgba(0, 0, 0, .42);
             }
-
             .file-context-option {
                 color: #e5eaf3;
             }
-
-            .file-context-option:hover,
-            .file-context-option:focus-visible {
+            .file-context-option:hover, .file-context-option:focus-visible {
                 color: #9bc0ff;
                 background: #293b56;
             }
-
             .copy-toast {
                 color: #f8fafc;
                 background: #050a12;
             }
-
-            .file-icon-pdf,
-            .viewer-file-icon.file-icon-pdf {
+            .file-icon-pdf, .viewer-file-icon.file-icon-pdf {
                 color: #ff7777;
                 background: #48272d;
             }
-
-            .file-icon-word,
-            .viewer-file-icon.file-icon-word {
+            .file-icon-word, .viewer-file-icon.file-icon-word {
                 color: #8db8ff;
                 background: #223b60;
             }
-
-            .file-icon-excel,
-            .viewer-file-icon.file-icon-excel {
+            .file-icon-excel, .viewer-file-icon.file-icon-excel {
                 color: #73d49a;
                 background: #1e4334;
             }
-
-            .file-icon-powerpoint,
-            .viewer-file-icon.file-icon-powerpoint {
+            .file-icon-powerpoint, .viewer-file-icon.file-icon-powerpoint {
                 color: #ff987c;
                 background: #4b302b;
             }
-
-            .file-icon-text,
-            .viewer-file-icon.file-icon-text,
-            .file-icon-other,
-            .viewer-file-icon.file-icon-other {
+            .file-icon-text, .viewer-file-icon.file-icon-text, .file-icon-other, .viewer-file-icon.file-icon-other {
                 color: #c1ccdb;
                 background: #303b4c;
             }
-
-            .file-icon-code,
-            .viewer-file-icon.file-icon-code {
+            .file-icon-code, .viewer-file-icon.file-icon-code {
                 color: #c0a4ff;
                 background: #392d56;
             }
-
-            .file-icon-image,
-            .viewer-file-icon.file-icon-image {
+            .file-icon-image, .viewer-file-icon.file-icon-image {
                 color: #e0a1ff;
                 background: #492f55;
             }
-
-            .file-icon-video,
-            .viewer-file-icon.file-icon-video {
+            .file-icon-video, .viewer-file-icon.file-icon-video {
                 color: #c1a5ff;
                 background: #392e59;
             }
-
-            .file-icon-audio,
-            .viewer-file-icon.file-icon-audio {
+            .file-icon-audio, .viewer-file-icon.file-icon-audio {
                 color: #70dce5;
                 background: #1d4148;
             }
-
-            .file-icon-archive,
-            .viewer-file-icon.file-icon-archive {
+            .file-icon-archive, .viewer-file-icon.file-icon-archive {
                 color: #ffd078;
                 background: #4a3b22;
             }
-
             .retry-button {
                 color: #9bc0ff;
                 background: #1b2738;
                 border-color: #3b5274;
             }
-
             .retry-button:hover {
                 background: #293b56;
             }
-
             .loading-spinner {
                 border-color: #35445b;
                 border-top-color: var(--blue);
             }
-
             .viewer {
                 color: var(--text);
                 background: #111827;
             }
-
             .viewer-header {
                 color: #e5eaf3;
                 background: #182231;
                 border-bottom-color: var(--border);
             }
-
-            .download-viewer,
-            .close-viewer {
+            .download-viewer, .close-viewer {
                 color: #c2ccda;
             }
-
             .download-viewer:hover {
                 color: #9bc0ff;
                 background: #293b56;
             }
-
             .close-viewer:hover {
                 color: #ff8c8c;
                 background: #48272d;
             }
-
-            .viewer-body,
-            .viewer-content-area {
+            .viewer-body, .viewer-content-area {
                 background: #111827;
             }
-
-            .viewer-loading,
-            .viewer-message {
+            .viewer-loading, .viewer-message {
                 color: #b4bfd0;
             }
-
             .pdf-toolbar {
                 color: #e5eaf3;
                 background: #182231;
                 border-bottom-color: var(--border);
             }
-
-            .pdf-page-counter,
-            .pdf-page-total {
+            .pdf-page-counter, .pdf-page-total {
                 color: #b4bfd0;
             }
-
             .pdf-page-input {
                 color: #e5eaf3;
             }
-
-            .pdf-page-input:focus,
-            .pdf-nav-button:hover:not(:disabled) {
+            .pdf-page-input:focus, .pdf-nav-button:hover:not(:disabled) {
                 background: #293b56;
             }
-
             .pdf-nav-button {
                 color: #c2ccda;
             }
-
             .pdf-scroll-area {
                 background: #111827;
             }
-
             .viewer-text {
                 color: #e5eaf3;
                 background: #182231;
             }
-
             .viewer.missing-file .viewer-file-icon {
                 color: #ff8c8c;
                 background: #48272d;
@@ -1203,7 +988,6 @@
             <p class="brand-tagline">Thư viện tài liệu học tập trực tuyến</p>
         </div>
     </header>
-
     <main id="main-content">
         <div class="table-shell" id="table-shell">
             <table aria-label="Thư viện tài liệu NdLMS">
@@ -1225,7 +1009,6 @@
             </table>
         </div>
     </main>
-
     <div class="file-context-menu" id="file-context-menu" role="menu" aria-label="Tùy chọn tệp">
         <button class="file-context-option" id="context-open-file" type="button" role="menuitem">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1243,7 +1026,6 @@
         </button>
     </div>
     <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
-
     <section class="viewer" id="viewer" aria-label="Trình xem tài liệu" aria-hidden="true">
         <header class="viewer-header">
             <div class="viewer-heading">
@@ -1269,7 +1051,6 @@
         </header>
         <div class="viewer-body" id="viewer-body"></div>
     </section>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         "use strict";
