@@ -2315,7 +2315,7 @@
                 if (shouldSkipAutoLoad()) return;
         
                 try {
-                    const res = await fetch('./files.json?_=' + Date.now(), { cache: 'no-store' });
+                    const res = await fetch(MAPS_URL + '?_=' + Date.now(), { cache: 'no-store' });
                     if (!res.ok) return;
         
                     const data = await res.json();
