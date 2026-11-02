@@ -978,6 +978,20 @@
                 background: #48272d;
             }
         }
+        @keyframes file-row-in {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .file-row-new {
+            animation: file-row-in .26s ease;
+        }
     </style>
 </head>
 <body>
@@ -2253,6 +2267,90 @@
             showDirectLinkLoading();
         }
 
+        (() => {
+            const fileListBody = document.getElementById('file-list');
+            if (!fileListBody) return;
+        
+            const AUTO_REFRESH_MS = 5000;
+        
+            function hasViewerOpen() {
+                return !!document.querySelector('.viewer.active');
+            }
+        
+            function hasViewerIdParam() {
+                const params = new URLSearchParams(window.location.search);
+                return params.has('id');
+            }
+        
+            function shouldSkipAutoLoad() {
+                return hasViewerOpen() || hasViewerIdParam() || document.hidden;
+            }
+        
+            function normalizeKey(file) {
+                const source = file.fileName || file.name || file.path || file.url || '';
+                return String(source).trim().toLowerCase();
+            }
+        
+            function currentKnownKeys() {
+                return new Set(
+                    [...fileListBody.querySelectorAll('tr[data-file-key]')].map(row => row.dataset.fileKey)
+                );
+            }
+        
+            function appendNewRow(file) {
+                const row = buildFileRow(file); // dùng hàm render row hiện tại của bạn
+                if (!row) return;
+        
+                row.classList.add('file-row-new');
+                row.dataset.fileKey = normalizeKey(file);
+        
+                fileListBody.appendChild(row);
+        
+                requestAnimationFrame(() => {
+                    row.classList.remove('file-row-new');
+                });
+            }
+        
+            async function refreshFileList() {
+                if (shouldSkipAutoLoad()) return;
+        
+                try {
+                    const res = await fetch('./files.json?_=' + Date.now(), { cache: 'no-store' });
+                    if (!res.ok) return;
+        
+                    const data = await res.json();
+                    const items = Array.isArray(data) ? data : (Array.isArray(data.files) ? data.files : []);
+        
+                    if (!items.length) return;
+        
+                    const existing = currentKnownKeys();
+        
+                    items.forEach(file => {
+                        const key = normalizeKey(file);
+                        if (!key || existing.has(key)) return;
+                        appendNewRow(file);
+                        existing.add(key);
+                    });
+                } catch (err) {
+                    // bỏ qua lỗi polling, không làm giật UI
+                }
+            }
+        
+            const poller = setInterval(() => {
+                refreshFileList();
+            }, AUTO_REFRESH_MS);
+        
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    refreshFileList();
+                }
+            });
+        
+            window.addEventListener('beforeunload', () => {
+                clearInterval(poller);
+            });
+        })();
+                
         loadFiles();
     </script>
 </body>
