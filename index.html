@@ -683,10 +683,10 @@
             right: 0;
             bottom: 0;
             z-index: 100;
-            width: 85px;
-            height: 22px;
+            width: 89px;
+            height: 21px;
             background: #fff;
-            pointer-events: none;
+            pointer-events: auto;
         }
         .viewer-image {
             display: block;
@@ -1128,6 +1128,7 @@
         const contextOpenFileButton = document.getElementById("context-open-file");
         const contextCopyLinkButton = document.getElementById("context-copy-link");
         const copyToast = document.getElementById("copy-toast");
+        const AUTO_REFRESH_MS = 5000;
         let contextMenuFile = null;
         let toastTimeout = null;
         let files = [];
@@ -1135,6 +1136,7 @@
         let previousBodyOverflow = "";
         let loading = false;
         let downloadInProgress = false;
+        let refreshInProgress = false;
         function getFileIconClass(fileName = "") {
             const extension = getExtension(fileName);
             if (extension === "pdf") return "file-icon-pdf";
@@ -1318,6 +1320,44 @@
             tableShell.classList.remove("table-opening");
             void tableShell.offsetWidth;
             tableShell.classList.add("table-opening");
+        }
+        async function refreshFileList() {
+            if (refreshInProgress ||
+                viewer.classList.contains("active") ||
+                new URLSearchParams(window.location.search).has("id") ||
+                document.hidden) {
+                return;
+            }
+            refreshInProgress = true;
+            try {
+                const response = await fetch(
+                    MAPS_URL + "?t=" + Date.now(),
+                    { cache: "no-store" }
+                );
+                if (!response.ok) return;
+                const data = await response.json();
+                if (!data || !Array.isArray(data.files)) return;
+                const incomingFiles = data.files.filter(file =>
+                    file &&
+                    typeof file.fileName === "string" &&
+                    file.fileName.trim() !== ""
+                );
+                const knownFiles = new Set(
+                    files.map(file => file.fileName.trim().toLowerCase())
+                );
+                const newFiles = incomingFiles.filter(file => {
+                    const key = file.fileName.trim().toLowerCase();
+                    return key && !knownFiles.has(key);
+                });
+                if (newFiles.length) {
+                    files = [...files, ...newFiles];
+                    renderFiles();
+                }
+            } catch (error) {
+                console.warn("Không thể tự động cập nhật danh sách tài liệu:", error);
+            } finally {
+                refreshInProgress = false;
+            }
         }
         function showFileContextMenu(file, x, y) {
             contextMenuFile = file;
@@ -1897,11 +1937,45 @@
             }
             openFile(target, false, true);
         }
+        function updateOfficeCornerCoverColor(cover) {
+            if (!cover.isConnected) return;
+            const rect = cover.getBoundingClientRect();
+            const x = Math.max(0, Math.floor(rect.left - 1));
+            const y = Math.min(window.innerHeight - 1, Math.floor(rect.top + 1));
+            const element = document.elementFromPoint(x, y);
+            let current = element;
+            while (current) {
+                const style = window.getComputedStyle(current);
+                const color = style.backgroundColor;
+                if (color && color !== "transparent" && color !== "rgba(0, 0, 0, 0)") {
+                    cover.style.backgroundColor = color;
+                    return;
+                }
+                current = current.parentElement;
+            }
+            cover.style.backgroundColor = "#fff";
+        }
         function addOfficeCornerCover() {
             const cover = document.createElement("div");
             cover.className = "office-corner-cover";
             cover.setAttribute("aria-hidden", "true");
             viewerBody.appendChild(cover);
+            const update = () => updateOfficeCornerCoverColor(cover);
+            update();
+            const colorTimer = setInterval(update, 10);
+            const cleanup = () => {
+                observer.disconnect();
+                clearInterval(colorTimer);
+                window.removeEventListener("resize", update);
+                window.removeEventListener("scroll", update, true);
+            };
+            const observer = new MutationObserver(() => {
+                if (cover.isConnected) update();
+                else cleanup();
+            });
+            observer.observe(viewerBody, { attributes: true, childList: true, subtree: true });
+            window.addEventListener("resize", update);
+            window.addEventListener("scroll", update, true);
         }
         function openFile(file, updateUrl = false, fromDirectLink = false) {
             if (!file || !file.fileName) {
@@ -2088,65 +2162,13 @@
         if (initialFileId) {
             showDirectLinkLoading();
         }
-        (() => {
-            const AUTO_REFRESH_MS = 5000;
-            let refreshInProgress = false;
-            function shouldSkipAutoRefresh() {
-                return (
-                    viewer.classList.contains("active") ||
-                    new URLSearchParams(window.location.search).has("id") ||
-                    document.hidden
-                );
-            }
-            async function refreshFileList() {
-                if (refreshInProgress || shouldSkipAutoRefresh()) {
-                    return;
-                }
-                refreshInProgress = true;
-                try {
-                    const response = await fetch(
-                        MAPS_URL + "?t=" + Date.now(),
-                        { cache: "no-store" }
-                    );
-                    if (!response.ok) {
-                        return;
-                    }
-                    const data = await response.json();
-                    if (!data || !Array.isArray(data.files)) {
-                        return;
-                    }
-                    const incomingFiles = data.files.filter(file =>
-                        file &&
-                        typeof file.fileName === "string" &&
-                        file.fileName.trim() !== ""
-                    );
-                    const knownFiles = new Set(
-                        files.map(file => file.fileName.trim().toLowerCase())
-                    );
-                    const newFiles = incomingFiles.filter(file => {
-                        const key = file.fileName.trim().toLowerCase();
-                        return key && !knownFiles.has(key);
-                    });
-                    if (newFiles.length) {
-                        files = [...files, ...newFiles];
-                        renderFiles();
-                    }
-                } catch (error) {
-                    console.warn("Không thể tự động cập nhật danh sách tài liệu:", error);
-                } finally {
-                    refreshInProgress = false;
-                }
-            }
-            const poller = setInterval(refreshFileList, AUTO_REFRESH_MS);
-            document.addEventListener("visibilitychange", () => {
-                if (!document.hidden) {
-                    refreshFileList();
-                }
-            });
-            window.addEventListener("beforeunload", () => {
-                clearInterval(poller);
-            });
-        })();
+        const autoRefreshTimer = setInterval(refreshFileList, AUTO_REFRESH_MS);
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) refreshFileList();
+        });
+        window.addEventListener("beforeunload", () => {
+            clearInterval(autoRefreshTimer);
+        });
         loadFiles();
     </script>
 </body>
