@@ -1985,9 +1985,7 @@
             window.addEventListener("scroll", update, true);
         }
         function openFile(file, updateUrl = false, fromDirectLink = false) {
-            if (!file || !file.fileName) {
-                return;
-            }
+            if (!file || !file.fileName) {return;}
             activeFile = file;
             viewer.classList.remove("missing-file");
             siteHeader.style.display = "none";
