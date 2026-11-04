@@ -683,7 +683,7 @@
             right: 0;
             bottom: 0;
             z-index: 100;
-            width: 89px;
+            width: 88px;
             height: 21px;
             background: #fff;
             pointer-events: auto;
@@ -1940,20 +1940,27 @@
         function updateOfficeCornerCoverColor(cover) {
             if (!cover.isConnected) return;
             const rect = cover.getBoundingClientRect();
-            const x = Math.max(0, Math.floor(rect.left - 1));
-            const y = Math.min(window.innerHeight - 1, Math.floor(rect.top + 1));
+            const x = Math.min(window.innerWidth - 1, Math.max(0, Math.floor(rect.left + 1)));
+            const y = Math.min(window.innerHeight - 1, Math.max(0, Math.floor(rect.top + 1)));
+            const previousPointerEvents = cover.style.pointerEvents;
+            cover.style.pointerEvents = "none";
             const element = document.elementFromPoint(x, y);
+            cover.style.pointerEvents = previousPointerEvents || "auto";
             let current = element;
+            let color = "";
             while (current) {
-                const style = window.getComputedStyle(current);
-                const color = style.backgroundColor;
-                if (color && color !== "transparent" && color !== "rgba(0, 0, 0, 0)") {
-                    cover.style.backgroundColor = color;
-                    return;
+                const candidate = window.getComputedStyle(current).backgroundColor;
+                if (candidate && candidate !== "transparent" && candidate !== "rgba(0, 0, 0, 0)") {
+                    color = candidate;
+                    break;
                 }
                 current = current.parentElement;
             }
-            cover.style.backgroundColor = "#fff";
+            if (!color) color = "#fff";
+            if (cover.dataset.backgroundColor !== color) {
+                cover.style.backgroundColor = color;
+                cover.dataset.backgroundColor = color;
+            }
         }
         function addOfficeCornerCover() {
             const cover = document.createElement("div");
