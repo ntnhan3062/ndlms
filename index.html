@@ -8,14 +8,12 @@
     <title>NdLMS — Thư viện tài liệu</title>
     <link rel="icon" href="./Logo.png" type="image/png">
     <style>
-        /* Không cho bôi đen giao diện; vẫn cho chọn nội dung trong ô nhập và văn bản tài liệu. */
         html,
         body,
         body * {
             -webkit-user-select: none;
             user-select: none;
         }
-
         input,
         textarea,
         select,
@@ -34,29 +32,24 @@
             --page: #f6f8fb;
             --hover: #f2f7ff;
         }
-
         * {
             box-sizing: border-box;
         }
-
         html,
         body {
             width: 100%;
             min-height: 100%;
             margin: 0;
         }
-
         body {
             font-family: Inter, "Segoe UI", Arial, sans-serif;
             color: var(--text);
             background: var(--page);
             -webkit-font-smoothing: antialiased;
         }
-
         button {
             font: inherit;
         }
-
         .site-header {
             position: sticky;
             top: 0;
@@ -70,7 +63,6 @@
             border-bottom: 1px solid var(--border);
             backdrop-filter: blur(12px);
         }
-
         .brand-logo {
             display: block;
             flex: 0 0 43px;
@@ -79,11 +71,9 @@
             object-fit: contain;
             border-radius: 10px;
         }
-
         .brand-copy {
             min-width: 0;
         }
-
         .brand-title {
             margin: 0;
             font-size: 19px;
@@ -91,20 +81,17 @@
             font-weight: 750;
             letter-spacing: -.35px;
         }
-
         .brand-tagline {
             margin: 3px 0 0;
             color: var(--muted);
             font-size: 11px;
             line-height: 1.35;
         }
-
         main {
             width: min(100%, 1100px);
             margin: 0 auto;
             padding: 22px clamp(12px, 3vw, 28px) 36px;
         }
-
         .table-shell {
             overflow: hidden;
             background: #fff;
@@ -113,33 +100,27 @@
             box-shadow: 0 3px 12px rgba(20, 37, 63, .035);
             transform-origin: top center;
         }
-
         .table-shell.table-opening {
             animation: table-expand .36s cubic-bezier(.2, .75, .25, 1) both;
         }
-
         @keyframes table-expand {
             from {
                 opacity: 0;
                 transform: scaleY(.88) translateY(-7px);
             }
-
             to {
                 opacity: 1;
                 transform: scaleY(1) translateY(0);
             }
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
         }
-
         thead {
             background: #f8fafc;
         }
-
         th {
             height: 43px;
             padding: 0 15px;
@@ -151,33 +132,27 @@
             text-transform: uppercase;
             border-bottom: 1px solid var(--border);
         }
-
         th:first-child,
         td:first-child {
             width: 105px;
             text-align: center;
         }
-
         td {
             height: 58px;
             padding: 0 15px;
             font-size: 13px;
             border-bottom: 1px solid #edf0f5;
         }
-
         tbody tr:last-child td {
             border-bottom: 0;
         }
-
         tbody tr {
             transition: background .15s ease;
             cursor: pointer;
         }
-
         tbody tr:hover {
             background: var(--hover);
         }
-
         .type-badge {
             display: inline-flex;
             align-items: center;
@@ -190,12 +165,10 @@
             font-size: 11px;
             white-space: nowrap;
         }
-
         .type-badge.answer {
             color: #147344;
             background: #e9f8ef;
         }
-
         .file-name-button {
             display: flex;
             align-items: center;
@@ -209,13 +182,9 @@
             border: 0;
             cursor: pointer;
         }
-
         .file-name-button:hover .file-title {
             color: var(--blue);
         }
-
-
-
         .file-context-menu {
             position: fixed;
             z-index: 1000;
@@ -227,24 +196,20 @@
             border-radius: 10px;
             box-shadow: 0 8px 28px rgba(16, 24, 40, .16);
         }
-
         .file-context-menu.active {
             display: block;
             animation: context-menu-in .12s ease-out both;
         }
-
         @keyframes context-menu-in {
             from {
                 opacity: 0;
                 transform: translateY(-3px) scale(.98);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
-
         .file-context-option {
             display: flex;
             align-items: center;
@@ -260,20 +225,17 @@
             font-size: 13px;
             cursor: pointer;
         }
-
         .file-context-option:hover,
         .file-context-option:focus-visible {
             color: var(--blue);
             background: #f2f7ff;
             outline: none;
         }
-
         .file-context-option svg {
             flex: 0 0 17px;
             width: 17px;
             height: 17px;
         }
-
         .copy-toast {
             position: fixed;
             right: 18px;
@@ -292,12 +254,10 @@
             transform: translateY(6px);
             transition: opacity .18s ease, transform .18s ease;
         }
-
         .copy-toast.active {
             opacity: 1;
             transform: translateY(0);
         }
-
         .file-icon {
             display: grid;
             flex: 0 0 33px;
@@ -308,72 +268,58 @@
             background: #eef1f5;
             border-radius: 9px;
         }
-
         .file-icon-pdf {
             color: #e53935;
             background: #ffebee;
         }
-
         .file-icon-word {
             color: #185abd;
             background: #e8f0fe;
         }
-
         .file-icon-excel {
             color: #217346;
             background: #e6f4ea;
         }
-
         .file-icon-powerpoint {
             color: #d24726;
             background: #fcebe6;
         }
-
         .file-icon-text {
             color: #526174;
             background: #edf0f4;
         }
-
         .file-icon-code {
             color: #6f42c1;
             background: #f0eaff;
         }
-
         .file-icon-image {
             color: #8e44ad;
             background: #f5eafa;
         }
-
         .file-icon-video {
             color: #7c3aed;
             background: #efe7ff;
         }
-
         .file-icon-audio {
             color: #00838f;
             background: #e0f7fa;
         }
-
         .file-icon-archive {
             color: #b7791f;
             background: #fff4d6;
         }
-
         .file-icon-other {
             color: #526174;
             background: #eef1f5;
         }
-
         .file-icon svg {
             width: 17px;
             height: 17px;
         }
-
         .file-text {
             display: block;
             min-width: 0;
         }
-
         .file-title {
             display: block;
             overflow-wrap: anywhere;
@@ -382,7 +328,6 @@
             font-weight: 650;
             transition: color .15s ease;
         }
-
         .file-subtitle {
             display: block;
             margin-top: 3px;
@@ -390,7 +335,6 @@
             font-size: 11px;
             line-height: 1.3;
         }
-
         .status {
             padding: 34px 18px;
             color: var(--muted);
@@ -398,11 +342,9 @@
             font-size: 13px;
             line-height: 1.6;
         }
-
         .status.error {
             color: #b42318;
         }
-
         .retry-button {
             margin-top: 12px;
             padding: 8px 13px;
@@ -412,11 +354,9 @@
             border-radius: 8px;
             cursor: pointer;
         }
-
         .retry-button:hover {
             background: #f2f7ff;
         }
-
         .loading-spinner {
             width: 25px;
             height: 25px;
@@ -426,13 +366,11 @@
             border-radius: 50%;
             animation: spin .8s linear infinite;
         }
-
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
         }
-
         .viewer {
             position: fixed;
             inset: 0;
@@ -441,11 +379,9 @@
             flex-direction: column;
             background: #f1f3f6;
         }
-
         .viewer.active {
             display: flex;
         }
-
         .viewer-header {
             display: flex;
             flex: 0 0 54px;
@@ -458,7 +394,6 @@
             background: #fff;
             border-bottom: 1px solid var(--border);
         }
-
         .viewer-heading {
             display: flex;
             align-items: center;
@@ -466,7 +401,6 @@
             min-width: 0;
             flex: 1;
         }
-
         .viewer-file-icon {
             display: grid;
             flex: 0 0 33px;
@@ -477,68 +411,54 @@
             background: #eef1f5;
             border-radius: 9px;
         }
-
         .viewer-file-icon svg {
             width: 17px;
             height: 17px;
         }
-
-        /* Giữ đúng màu icon của từng loại file trong thanh xem tài liệu ở chế độ sáng. */
         .viewer-file-icon.file-icon-pdf {
             color: #e53935;
             background: #ffebee;
         }
-
         .viewer-file-icon.file-icon-word {
             color: #185abd;
             background: #e8f0fe;
         }
-
         .viewer-file-icon.file-icon-excel {
             color: #217346;
             background: #e6f4ea;
         }
-
         .viewer-file-icon.file-icon-powerpoint {
             color: #d24726;
             background: #fcebe6;
         }
-
         .viewer-file-icon.file-icon-text {
             color: #526174;
             background: #edf0f4;
         }
-
         .viewer-file-icon.file-icon-code {
             color: #6f42c1;
             background: #f0eaff;
         }
-
         .viewer-file-icon.file-icon-image {
             color: #8e44ad;
             background: #f5eafa;
         }
-
         .viewer-file-icon.file-icon-video {
             color: #7c3aed;
             background: #efe7ff;
         }
-
         .viewer-file-icon.file-icon-audio {
             color: #00838f;
             background: #e0f7fa;
         }
-
         .viewer-file-icon.file-icon-archive {
             color: #b7791f;
             background: #fff4d6;
         }
-
         .viewer-file-icon.file-icon-other {
             color: #526174;
             background: #eef1f5;
         }
-
         .viewer-title {
             overflow: hidden;
             min-width: 0;
@@ -547,14 +467,12 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
         .viewer-actions {
             display: flex;
             flex: 0 0 auto;
             align-items: center;
             gap: 5px;
         }
-
         .download-viewer,
         .close-viewer {
             display: grid;
@@ -568,32 +486,26 @@
             border-radius: 9px;
             cursor: pointer;
         }
-
         .download-viewer:hover {
             color: var(--blue);
             background: #edf4ff;
         }
-
         .download-viewer svg {
             width: 20px;
             height: 20px;
         }
-
         .download-viewer:disabled {
             cursor: wait;
             opacity: .55;
         }
-
         .close-viewer:hover {
             color: #b42318;
             background: #fff0f0;
         }
-
         .close-viewer svg {
             width: 21px;
             height: 21px;
         }
-
         .viewer-body {
             position: relative;
             display: flex;
@@ -603,7 +515,6 @@
             overflow: hidden;
             background: #e9edf3;
         }
-
         .viewer-loading {
             display: flex;
             width: 100%;
@@ -618,7 +529,6 @@
             text-align: center;
             font-size: 13px;
         }
-
         .viewer-content-area {
             position: relative;
             display: flex;
@@ -627,7 +537,6 @@
             overflow: auto;
             background: #e9edf3;
         }
-
         .pdf-toolbar {
             position: relative;
             z-index: 2;
@@ -641,7 +550,6 @@
             border-bottom: 1px solid var(--border);
             box-shadow: 0 3px 7px rgba(16, 24, 40, .12);
         }
-
         .pdf-page-counter {
             display: inline-flex;
             align-items: center;
@@ -650,7 +558,6 @@
             font-size: 13px;
             white-space: nowrap;
         }
-
         .pdf-page-input {
             width: 43px;
             padding: 5px 2px;
@@ -663,28 +570,23 @@
             text-align: center;
             appearance: textfield;
         }
-
         .pdf-page-input::-webkit-inner-spin-button,
         .pdf-page-input::-webkit-outer-spin-button {
             margin: 0;
             appearance: none;
         }
-
         .pdf-page-input:focus {
             background: #f2f7ff;
         }
-
         .pdf-page-total {
             color: #667085;
         }
-
         .pdf-zoom-control {
             display: inline-flex;
             align-items: center;
             gap: 2px;
             white-space: nowrap;
         }
-
         .pdf-zoom-input {
             width: 42px;
             padding: 4px 0;
@@ -698,18 +600,15 @@
             appearance: textfield;
             -moz-appearance: textfield;
         }
-
         .pdf-zoom-input::-webkit-inner-spin-button,
         .pdf-zoom-input::-webkit-outer-spin-button {
             margin: 0;
             appearance: none;
         }
-
         .pdf-zoom-percent {
             color: #667085;
             font-size: 13px;
         }
-
         .pdf-nav-button {
             display: grid;
             width: 34px;
@@ -721,22 +620,18 @@
             border-radius: 8px;
             cursor: pointer;
         }
-
         .pdf-nav-button:hover:not(:disabled) {
             color: var(--blue);
             background: #edf4ff;
         }
-
         .pdf-nav-button:disabled {
             opacity: .35;
             cursor: default;
         }
-
         .pdf-nav-button svg {
             width: 19px;
             height: 19px;
         }
-
         .pdf-scroll-area {
             display: flex;
             flex: 1;
@@ -748,7 +643,6 @@
             padding: 18px 12px 28px;
             scroll-behavior: smooth;
         }
-
         .pdf-page-canvas {
             display: block;
             max-width: 100%;
@@ -756,13 +650,11 @@
             background: #fff;
             box-shadow: 0 2px 9px rgba(16, 24, 40, .18);
         }
-
         .pdf-page-canvas.zoom-arrive {
             animation: pdf-page-zoom-arrive 180ms cubic-bezier(.2, .75, .25, 1) both;
             transform-origin: center top;
             backface-visibility: hidden;
         }
-
         @keyframes pdf-page-zoom-arrive {
             from {
                 opacity: .9;
@@ -773,13 +665,11 @@
                 transform: scale(1);
             }
         }
-
         @media (prefers-reduced-motion: reduce) {
             .pdf-page-canvas.zoom-arrive {
                 animation: none;
             }
         }
-
         .viewer-frame {
             display: block;
             width: 100%;
@@ -788,7 +678,6 @@
             background: #fff;
             border: 0;
         }
-
         .office-corner-cover {
             position: fixed;
             right: 0;
@@ -799,7 +688,6 @@
             background: #fff;
             pointer-events: none;
         }
-
         .viewer-image {
             display: block;
             max-width: 100%;
@@ -807,7 +695,6 @@
             margin: auto;
             object-fit: contain;
         }
-
         .viewer-text {
             width: min(100%, 1100px);
             min-height: 100%;
@@ -819,7 +706,6 @@
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
-
         .viewer-message {
             display: flex;
             width: 100%;
@@ -835,7 +721,6 @@
             text-align: center;
             font-size: 13px;
         }
-
         .viewer-warning-icon {
             display: grid;
             width: 48px;
@@ -843,125 +728,100 @@
             place-items: center;
             color: #d92d20;
         }
-
         .viewer-warning-icon svg {
             width: 42px;
             height: 42px;
         }
-
         .viewer.missing-file .viewer-file-icon {
             color: #d92d20;
             background: #fff0f0;
         }
-
         .viewer-message a {
             color: var(--blue);
             font-weight: 650;
         }
-
         @media (max-width: 600px) {
             .site-header {
                 min-height: 59px;
                 padding: 8px 12px;
             }
-
             .brand-logo {
                 flex-basis: 38px;
                 width: 38px;
                 height: 38px;
             }
-
             .brand-title {
                 font-size: 17px;
             }
-
             .brand-tagline {
                 font-size: 10px;
             }
-
             main {
                 padding: 17px 9px 26px;
             }
-
             th {
                 padding: 0 9px;
                 font-size: 10px;
             }
-
             th:first-child,
             td:first-child {
                 width: 82px;
             }
-
             td {
                 padding: 0 8px;
             }
-
             .file-name-button {
                 gap: 8px;
             }
-
             .file-icon {
                 flex-basis: 29px;
                 width: 29px;
                 height: 29px;
             }
-
             .file-title {
                 font-size: 12px;
             }
-
             .file-subtitle {
                 font-size: 10px;
             }
-
             .type-badge {
                 padding: 4px 6px;
                 font-size: 10px;
                 white-space: normal;
                 text-align: center;
             }
-
             .viewer-header {
                 flex-basis: 49px;
                 padding: 0 9px 0 13px;
             }
-
             .viewer-title {
                 font-size: 13px;
             }
-
             .viewer-file-icon {
                 flex-basis: 29px;
                 width: 29px;
                 height: 29px;
             }
-
             .viewer-actions {
                 gap: 0;
             }
-
             .download-viewer,
             .close-viewer {
                 flex-basis: 34px;
                 width: 34px;
                 height: 34px;
             }
-
             .viewer-text {
                 padding: 16px;
             }
-
             .pdf-toolbar {
                 flex-basis: 45px;
                 gap: 5px;
                 padding: 0 6px;
             }
-
             .pdf-page-input {
                 width: 37px;
             }
-
             .pdf-scroll-area {
                 align-items: flex-start;
                 padding: 10px 6px 20px;
@@ -970,7 +830,6 @@
         html {
             color-scheme: light dark;
         }
-
         @media (prefers-color-scheme: dark) {
             :root {
                 --blue: #78aaff;
@@ -981,102 +840,82 @@
                 --page: #111827;
                 --hover: #202d42;
             }
-
             body {
                 background: var(--page);
                 color: var(--text);
             }
-
             .site-header {
                 background: rgba(17, 24, 39, .96);
             }
-
             .table-shell {
                 background: #182231;
                 border-color: var(--border);
                 box-shadow: 0 3px 12px rgba(0, 0, 0, .18);
             }
-
             thead {
                 background: #202b3b;
             }
-
             th {
                 color: #b4bfd0;
                 border-bottom-color: var(--border);
             }
-
             td {
                 border-bottom-color: #2b3545;
             }
-
             tbody tr:hover {
                 background: var(--hover);
             }
-
             .type-badge {
                 color: #c2ccda;
                 background: #303b4c;
             }
-
             .type-badge.answer {
                 color: #7ee0a5;
                 background: #173b30;
             }
-
             .file-name-button {
                 color: var(--text);
             }
-
             .file-name-button:hover .file-title {
                 color: var(--blue);
             }
-
             .file-context-menu {
                 background: #202b3b;
                 border-color: #3a4659;
                 box-shadow: 0 8px 28px rgba(0, 0, 0, .42);
             }
-
             .file-context-option {
                 color: #e5eaf3;
             }
-
             .file-context-option:hover,
             .file-context-option:focus-visible {
                 color: #9bc0ff;
                 background: #293b56;
             }
-
             .copy-toast {
                 color: #f8fafc;
                 background: #050a12;
             }
-
             .file-icon-pdf,
             .viewer-file-icon.file-icon-pdf {
                 color: #ff7777;
                 background: #48272d;
             }
-
             .file-icon-word,
             .viewer-file-icon.file-icon-word {
                 color: #8db8ff;
                 background: #223b60;
             }
-
             .file-icon-excel,
             .viewer-file-icon.file-icon-excel {
                 color: #73d49a;
                 background: #1e4334;
             }
-
             .file-icon-powerpoint,
             .viewer-file-icon.file-icon-powerpoint {
                 color: #ff987c;
                 background: #4b302b;
             }
-
             .file-icon-text,
             .viewer-file-icon.file-icon-text,
             .file-icon-other,
@@ -1084,121 +923,98 @@
                 color: #c1ccdb;
                 background: #303b4c;
             }
-
             .file-icon-code,
             .viewer-file-icon.file-icon-code {
                 color: #c0a4ff;
                 background: #392d56;
             }
-
             .file-icon-image,
             .viewer-file-icon.file-icon-image {
                 color: #e0a1ff;
                 background: #492f55;
             }
-
             .file-icon-video,
             .viewer-file-icon.file-icon-video {
                 color: #c1a5ff;
                 background: #392e59;
             }
-
             .file-icon-audio,
             .viewer-file-icon.file-icon-audio {
                 color: #70dce5;
                 background: #1d4148;
             }
-
             .file-icon-archive,
             .viewer-file-icon.file-icon-archive {
                 color: #ffd078;
                 background: #4a3b22;
             }
-
             .retry-button {
                 color: #9bc0ff;
                 background: #1b2738;
                 border-color: #3b5274;
             }
-
             .retry-button:hover {
                 background: #293b56;
             }
-
             .loading-spinner {
                 border-color: #35445b;
                 border-top-color: var(--blue);
             }
-
             .viewer {
                 color: var(--text);
                 background: #111827;
             }
-
             .viewer-header {
                 color: #e5eaf3;
                 background: #182231;
                 border-bottom-color: var(--border);
             }
-
             .download-viewer,
             .close-viewer {
                 color: #c2ccda;
             }
-
             .download-viewer:hover {
                 color: #9bc0ff;
                 background: #293b56;
             }
-
             .close-viewer:hover {
                 color: #ff8c8c;
                 background: #48272d;
             }
-
             .viewer-body,
             .viewer-content-area {
                 background: #111827;
             }
-
             .viewer-loading,
             .viewer-message {
                 color: #b4bfd0;
             }
-
             .pdf-toolbar {
                 color: #e5eaf3;
                 background: #182231;
                 border-bottom-color: var(--border);
             }
-
             .pdf-page-counter,
             .pdf-page-total {
                 color: #b4bfd0;
             }
-
             .pdf-page-input {
                 color: #e5eaf3;
             }
-
             .pdf-page-input:focus,
             .pdf-nav-button:hover:not(:disabled) {
                 background: #293b56;
             }
-
             .pdf-nav-button {
                 color: #c2ccda;
             }
-
             .pdf-scroll-area {
                 background: #111827;
             }
-
             .viewer-text {
                 color: #e5eaf3;
                 background: #182231;
             }
-
             .viewer.missing-file .viewer-file-icon {
                 color: #ff8c8c;
                 background: #48272d;
@@ -1214,7 +1030,6 @@
             <p class="brand-tagline">Thư viện tài liệu học tập trực tuyến</p>
         </div>
     </header>
-
     <main id="main-content">
         <div class="table-shell" id="table-shell">
             <table aria-label="Thư viện tài liệu NdLMS">
@@ -1236,7 +1051,6 @@
             </table>
         </div>
     </main>
-
     <div class="file-context-menu" id="file-context-menu" role="menu" aria-label="Tùy chọn tệp">
         <button class="file-context-option" id="context-open-file" type="button" role="menuitem">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1254,7 +1068,6 @@
         </button>
     </div>
     <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
-
     <section class="viewer" id="viewer" aria-label="Trình xem tài liệu" aria-hidden="true">
         <header class="viewer-header">
             <div class="viewer-heading">
@@ -1280,35 +1093,27 @@
         </header>
         <div class="viewer-body" id="viewer-body"></div>
     </section>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         "use strict";
-
         const MAPS_URL = "https://raw.githubusercontent.com/ntnhan3062/ndlms.doc/main/maps.json";
         const FILES_RAW_BASE = "https://raw.githubusercontent.com/ntnhan3062/ndlms.doc/main/";
-
         const OFFICE_EXTENSIONS = new Set([
             "doc", "docx", "xls", "xlsx", "ppt", "pptx"
         ]);
-
         const IMAGE_EXTENSIONS = new Set([
             "png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"
         ]);
-
         const TEXT_EXTENSIONS = new Set([
             "txt", "md", "json", "csv", "xml", "html", "css",
             "js", "py", "c", "cpp", "java"
         ]);
-
         const VIDEO_EXTENSIONS = new Set([
             "mp4", "webm", "ogg"
         ]);
-
         const AUDIO_EXTENSIONS = new Set([
             "mp3", "wav", "m4a", "oga", "ogg"
         ]);
-
         const listElement = document.getElementById("file-list");
         const tableShell = document.getElementById("table-shell");
         const siteHeader = document.getElementById("site-header");
@@ -1323,7 +1128,6 @@
         const contextOpenFileButton = document.getElementById("context-open-file");
         const contextCopyLinkButton = document.getElementById("context-copy-link");
         const copyToast = document.getElementById("copy-toast");
-
         let contextMenuFile = null;
         let toastTimeout = null;
         let files = [];
@@ -1331,10 +1135,8 @@
         let previousBodyOverflow = "";
         let loading = false;
         let downloadInProgress = false;
-
         function getFileIconClass(fileName = "") {
             const extension = getExtension(fileName);
-
             if (extension === "pdf") return "file-icon-pdf";
             if (["doc", "docx"].includes(extension)) return "file-icon-word";
             if (["xls", "xlsx"].includes(extension)) return "file-icon-excel";
@@ -1345,10 +1147,8 @@
             if (["zip", "rar", "7z", "gz", "tar"].includes(extension)) return "file-icon-archive";
             if (["js", "py", "c", "cpp", "java", "css", "html", "xml", "json"].includes(extension)) return "file-icon-code";
             if (["txt", "md", "csv"].includes(extension)) return "file-icon-text";
-
             return "file-icon-other";
         }
-
         function setFileIcon(element, fileName = "") {
             element.classList.remove(
                 "file-icon-pdf",
@@ -1366,13 +1166,11 @@
             element.classList.add(getFileIconClass(fileName));
             element.innerHTML = makeSvgIcon(fileName);
         }
-
         function makeSvgIcon(fileName = "") {
             const extension = getExtension(fileName);
             const common = `stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"`;
             let label = "FILE";
             let shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7M8 14h8M8 17h6" ${common}/>`;
-
             if (extension === "pdf") {
                 label = "PDF";
                 shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7" ${common}/><path d="M7.5 17v-5h1.7a1.4 1.4 0 0 1 0 2.8H7.5M12 17v-5h1a2.5 2.5 0 0 1 0 5zM17 17v-5h3M17 14h2.5" ${common}/>`;
@@ -1401,170 +1199,131 @@
                 label = "ZIP";
                 shape = `<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z" ${common}/><path d="M13 3v7h7M11 11v2h2v2h-2v2h2v2" ${common}/>`;
             }
-
             return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${shape}<title>${label}</title></svg>`;
         }
-
         function getExtension(fileName) {
             const lastPart = String(fileName || "").split("/").pop();
             const dot = lastPart.lastIndexOf(".");
-
             return dot < 0
                 ? ""
                 : lastPart.slice(dot + 1).toLowerCase();
         }
-
         function encodeFilePath(fileName) {
             return String(fileName)
                 .split("/")
                 .map(segment => encodeURIComponent(segment))
                 .join("/");
         }
-
         function getFileUrl(file) {
             return FILES_RAW_BASE + encodeFilePath(file.fileName);
         }
-
         function showListError() {
             listElement.replaceChildren();
-
             const row = document.createElement("tr");
             const cell = document.createElement("td");
             cell.colSpan = 2;
-
             const status = document.createElement("div");
             status.className = "status error";
             status.appendChild(
                 document.createTextNode("Có lỗi xảy ra! Vui lòng thử lại.")
             );
-
             const retry = document.createElement("button");
             retry.className = "retry-button";
             retry.type = "button";
             retry.textContent = "Thử lại";
             retry.addEventListener("click", loadFiles);
-
             status.appendChild(document.createElement("br"));
             status.appendChild(retry);
-
             cell.appendChild(status);
             row.appendChild(cell);
             listElement.appendChild(row);
         }
-
         function showLoading() {
             listElement.replaceChildren();
-
             const row = document.createElement("tr");
             const cell = document.createElement("td");
             cell.colSpan = 2;
-
             const status = document.createElement("div");
             status.className = "status";
-
             const spinner = document.createElement("div");
             spinner.className = "loading-spinner";
-
             status.appendChild(spinner);
             cell.appendChild(status);
             row.appendChild(cell);
             listElement.appendChild(row);
         }
-
         function renderFiles() {
             listElement.replaceChildren();
-
             if (!files.length) {
                 const row = document.createElement("tr");
                 const cell = document.createElement("td");
                 cell.colSpan = 2;
-
                 const status = document.createElement("div");
                 status.className = "status";
                 status.textContent = "Chưa có tài liệu trong danh sách.";
-
                 cell.appendChild(status);
                 row.appendChild(cell);
                 listElement.appendChild(row);
                 return;
             }
-
             const fragment = document.createDocumentFragment();
-
             files.forEach(file => {
                 const row = document.createElement("tr");
-
                 const typeCell = document.createElement("td");
                 const badge = document.createElement("span");
-
                 badge.className = "type-badge" +
                     (file.type === "Lời giải" ? " answer" : "");
-
                 badge.textContent = file.type || "Đề";
                 typeCell.appendChild(badge);
                 row.appendChild(typeCell);
-
                 const nameCell = document.createElement("td");
                 const nameButton = document.createElement("button");
-
                 nameButton.className = "file-name-button";
                 nameButton.type = "button";
                 nameButton.title = "Mở " +
                     (file.displayName || file.fileName);
-
                 const icon = document.createElement("span");
                 icon.className = "file-icon";
                 setFileIcon(icon, file.fileName);
                 nameButton.appendChild(icon);
-
                 const textWrap = document.createElement("span");
                 textWrap.className = "file-text";
-
                 const title = document.createElement("span");
                 title.className = "file-title";
                 title.textContent = file.displayName ||
                     file.fileName ||
                     "Tài liệu";
-
                 textWrap.appendChild(title);
-
                 if (file.subject) {
                     const subtitle = document.createElement("span");
                     subtitle.className = "file-subtitle";
                     subtitle.textContent = file.subject;
                     textWrap.appendChild(subtitle);
                 }
-
                 nameButton.appendChild(textWrap);
                 nameButton.addEventListener("click", event => {
                     event.stopPropagation();
                     openFile(file);
                 });
-
                 row.addEventListener("click", () => openFile(file));
                 row.addEventListener("contextmenu", event => {
                     event.preventDefault();
                     showFileContextMenu(file, event.clientX, event.clientY);
                 });
-
                 nameCell.appendChild(nameButton);
                 row.appendChild(nameCell);
                 fragment.appendChild(row);
             });
-
             listElement.appendChild(fragment);
-
             tableShell.classList.remove("table-opening");
             void tableShell.offsetWidth;
             tableShell.classList.add("table-opening");
         }
-
         function showFileContextMenu(file, x, y) {
             contextMenuFile = file;
             fileContextMenu.classList.add("active");
             fileContextMenu.style.left = "0px";
             fileContextMenu.style.top = "0px";
-
             const menuRect = fileContextMenu.getBoundingClientRect();
             const margin = 8;
             const left = Math.max(
@@ -1575,35 +1334,28 @@
                 margin,
                 Math.min(y, window.innerHeight - menuRect.height - margin)
             );
-
             fileContextMenu.style.left = left + "px";
             fileContextMenu.style.top = top + "px";
         }
-
         function hideFileContextMenu() {
             fileContextMenu.classList.remove("active");
             contextMenuFile = null;
         }
-
         function showCopyToast(message) {
             copyToast.textContent = message;
             copyToast.classList.add("active");
-
             if (toastTimeout) {
                 clearTimeout(toastTimeout);
             }
-
             toastTimeout = setTimeout(() => {
                 copyToast.classList.remove("active");
             }, 2200);
         }
-
         async function copyTextToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
                 await navigator.clipboard.writeText(text);
                 return;
             }
-
             const textarea = document.createElement("textarea");
             textarea.value = text;
             textarea.setAttribute("readonly", "");
@@ -1612,33 +1364,26 @@
             textarea.style.pointerEvents = "none";
             document.body.appendChild(textarea);
             textarea.select();
-
             const copied = document.execCommand("copy");
             textarea.remove();
-
             if (!copied) {
                 throw new Error("Trình duyệt không cho phép sao chép liên kết.");
             }
         }
-
         async function copyFileViewLink() {
             const file = contextMenuFile;
             hideFileContextMenu();
-
             if (!file) {
                 return;
             }
-
             if (file.id === undefined || file.id === null || String(file.id).trim() === "") {
                 showCopyToast("File này chưa có ID để tạo liên kết xem.");
                 return;
             }
-
             const url = new URL(window.location.href);
             url.search = "";
             url.hash = "";
             url.searchParams.set("id", String(file.id));
-
             try {
                 await copyTextToClipboard(url.toString());
                 showCopyToast("Đã sao chép liên kết xem file.");
@@ -1647,39 +1392,31 @@
                 showCopyToast("Không thể sao chép liên kết. Vui lòng thử lại.");
             }
         }
-
         contextOpenFileButton.addEventListener("click", () => {
             const file = contextMenuFile;
             hideFileContextMenu();
-
             if (file) {
                 openFile(file);
             }
         });
-
         contextCopyLinkButton.addEventListener("click", copyFileViewLink);
-
         document.addEventListener("pointerdown", event => {
             if (!fileContextMenu.contains(event.target)) {
                 hideFileContextMenu();
             }
         });
-
         document.addEventListener("click", event => {
             if (!fileContextMenu.contains(event.target)) {
                 hideFileContextMenu();
             }
         });
-
         document.addEventListener("keydown", event => {
             if (event.key === "Escape") {
                 hideFileContextMenu();
             }
         });
-
         window.addEventListener("resize", hideFileContextMenu);
         window.addEventListener("scroll", hideFileContextMenu, true);
-
         function showDirectLinkLoading() {
             siteHeader.style.display = "none";
             mainContent.style.display = "none";
@@ -1697,72 +1434,55 @@
             downloadViewerButton.style.display = "none";
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
-
             const status = document.createElement("div");
             status.className = "viewer-message";
-
             const spinner = document.createElement("div");
             spinner.className = "loading-spinner";
-
             const text = document.createElement("div");
             text.textContent = "Đang kiểm tra và mở tài liệu…";
-
             status.appendChild(spinner);
             status.appendChild(text);
             viewerBody.appendChild(status);
-
             previousBodyOverflow = document.body.style.overflow;
             document.body.style.overflow = "hidden";
         }
-
         async function loadFiles() {
             if (loading) {
                 return;
             }
-
             loading = true;
-
             const requestedId = new URLSearchParams(
                 window.location.search
             ).get("id");
-
             if (requestedId) {
                 showDirectLinkLoading();
             } else {
                 showLoading();
             }
-
             try {
                 const response = await fetch(
                     MAPS_URL + "?t=" + Date.now(),
                     { cache: "no-store" }
                 );
-
                 if (!response.ok) {
                     throw new Error("HTTP " + response.status);
                 }
-
                 const data = await response.json();
-
                 if (!data || !Array.isArray(data.files)) {
                     throw new Error("Invalid maps.json");
                 }
-
                 files = data.files.filter(file =>
                     file &&
                     typeof file.fileName === "string" &&
                     file.fileName.trim() !== ""
                 );
-
                 if (requestedId) {
                     await openFileById(requestedId);
                     return;
                 }
-
                 renderFiles();
             } catch (error) {
                 console.error(error);
-
                 if (requestedId) {
                     showViewerMessage("Không thể tải thông tin tài liệu. Vui lòng thử lại sau.");
                     viewerTitle.textContent = "Không thể mở tài liệu";
@@ -1776,21 +1496,17 @@
                 loading = false;
             }
         }
-
         function showViewerMessage(message, fileUrl) {
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
             viewerBody.style.flexDirection = "column";
-
             const wrapper = document.createElement("div");
             wrapper.className = "viewer-message";
             wrapper.style.flex = "1";
             wrapper.style.minHeight = "0";
-
             const text = document.createElement("div");
             text.textContent = message;
             wrapper.appendChild(text);
-
             if (fileUrl) {
                 const link = document.createElement("a");
                 link.href = fileUrl;
@@ -1799,31 +1515,24 @@
                 link.textContent = "Mở hoặc tải file gốc";
                 wrapper.appendChild(link);
             }
-
             viewerBody.appendChild(wrapper);
         }
-
         function showViewerLoading(message = "Đang tải file, vui lòng chờ…") {
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
             viewerBody.style.flexDirection = "column";
-
             const loadingPanel = document.createElement("div");
             loadingPanel.className = "viewer-loading";
             loadingPanel.id = "viewer-loading-panel";
-
             const spinner = document.createElement("div");
             spinner.className = "loading-spinner";
-
             const label = document.createElement("div");
             label.textContent = message;
-
             loadingPanel.appendChild(spinner);
             loadingPanel.appendChild(label);
             viewerBody.appendChild(loadingPanel);
             return loadingPanel;
         }
-
         function showIframeWhenLoaded(iframe, message = "Đang tải file, vui lòng chờ…") {
             const loadingPanel = showViewerLoading(message);
             iframe.style.display = "none";
@@ -1836,22 +1545,18 @@
             }, { once: true });
             viewerBody.appendChild(iframe);
         }
-
         function createPdfToolbar(totalPages, onGoToPage, onZoomChange) {
             const toolbar = document.createElement("div");
             toolbar.className = "pdf-toolbar";
             toolbar.setAttribute("aria-label", "Điều khiển trang PDF");
-
             const previous = document.createElement("button");
             previous.className = "pdf-nav-button";
             previous.type = "button";
             previous.title = "Trang trước";
             previous.setAttribute("aria-label", "Trang trước");
             previous.innerHTML = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 5-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-
             const counter = document.createElement("div");
             counter.className = "pdf-page-counter";
-
             const pageInput = document.createElement("input");
             pageInput.className = "pdf-page-input";
             pageInput.type = "number";
@@ -1861,25 +1566,20 @@
             pageInput.value = "1";
             pageInput.setAttribute("aria-label", "Số trang hiện tại");
             pageInput.title = "Nhập số trang rồi nhấn Enter";
-
             const total = document.createElement("span");
             total.className = "pdf-page-total";
             total.textContent = "/ " + totalPages;
-
             counter.appendChild(pageInput);
             counter.appendChild(total);
-
             const next = document.createElement("button");
             next.className = "pdf-nav-button";
             next.type = "button";
             next.title = "Trang tiếp theo";
             next.setAttribute("aria-label", "Trang tiếp theo");
             next.innerHTML = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-
             const zoomControl = document.createElement("div");
             zoomControl.className = "pdf-zoom-control";
             zoomControl.setAttribute("aria-label", "Điều khiển thu phóng PDF");
-
             function makeZoomButton(title, svg) {
                 const button = document.createElement("button");
                 button.className = "pdf-nav-button";
@@ -1889,7 +1589,6 @@
                 button.innerHTML = svg;
                 return button;
             }
-
             const zoomOut = makeZoomButton("Thu nhỏ 10%", `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2M7.8 10.8h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`);
             const zoomIn = makeZoomButton("Phóng to 10%", `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2M7.8 10.8h6m-3-3v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`);
             const zoomReset = makeZoomButton("Đặt lại mức thu phóng 100%", `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`);
@@ -1905,10 +1604,8 @@
             const zoomPercent = document.createElement("span");
             zoomPercent.className = "pdf-zoom-percent";
             zoomPercent.textContent = "%";
-
             let currentPage = 1;
             let currentZoom = 100;
-
             function goTo(page) {
                 const pageNumber = Math.max(1, Math.min(totalPages, Number(page) || 1));
                 currentPage = pageNumber;
@@ -1917,7 +1614,6 @@
                 next.disabled = pageNumber >= totalPages;
                 onGoToPage(pageNumber);
             }
-
             function setZoom(value) {
                 const parsed = Number(value);
                 const zoom = Math.max(10, Math.min(500, Math.round((Number.isFinite(parsed) ? parsed : 100) / 10) * 10));
@@ -1928,7 +1624,6 @@
                 zoomReset.disabled = zoom === 100;
                 onZoomChange(zoom);
             }
-
             previous.addEventListener("click", () => goTo(currentPage - 1));
             next.addEventListener("click", () => goTo(currentPage + 1));
             pageInput.addEventListener("keydown", event => {
@@ -1950,20 +1645,17 @@
                 }
             });
             zoomInput.addEventListener("change", () => setZoom(zoomInput.value));
-
             zoomControl.appendChild(zoomOut);
             zoomControl.appendChild(zoomIn);
             zoomControl.appendChild(zoomReset);
             zoomControl.appendChild(zoomInput);
             zoomControl.appendChild(zoomPercent);
-
             toolbar.appendChild(previous);
             toolbar.appendChild(counter);
             toolbar.appendChild(next);
             toolbar.appendChild(zoomControl);
             goTo(1);
             setZoom(100);
-
             return {
                 element: toolbar,
                 setCurrentPage(page) {
@@ -1977,38 +1669,29 @@
                 }
             };
         }
-
         async function renderPdf(file, fileUrl) {
             if (!window.pdfjsLib) {
                 showViewerMessage("Không tải được thư viện đọc PDF. Kiểm tra kết nối Internet rồi thử lại.", fileUrl);
                 return;
             }
-
             showViewerLoading("Đang tải và xử lý tài liệu PDF…");
-
             try {
                 window.pdfjsLib.GlobalWorkerOptions.workerSrc =
                     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
                 const pdf = await window.pdfjsLib.getDocument({ url: fileUrl }).promise;
-
                 if (activeFile !== file || !viewer.classList.contains("active")) {
                     return;
                 }
-
                 viewerBody.replaceChildren();
                 viewerBody.style.display = "flex";
                 viewerBody.style.flexDirection = "column";
-
                 const scrollArea = document.createElement("div");
                 scrollArea.className = "pdf-scroll-area";
-
                 const pageCanvases = [];
                 let isProgrammaticScroll = false;
                 let scrollSyncFrame = 0;
                 let renderGeneration = 0;
                 let currentZoom = 100;
-
                 const toolbar = createPdfToolbar(pdf.numPages, pageNumber => {
                     const canvas = pageCanvases[pageNumber - 1];
                     if (canvas) {
@@ -2022,10 +1705,8 @@
                     currentZoom = zoom;
                     renderPdfPages(zoom);
                 });
-
                 viewerBody.appendChild(toolbar.element);
                 viewerBody.appendChild(scrollArea);
-
                 async function renderPdfPages(zoomPercent) {
                     const generation = ++renderGeneration;
                     const keepOldPagesVisible = pageCanvases.length > 0;
@@ -2033,17 +1714,14 @@
                     const previousScrollLeft = scrollArea.scrollLeft;
                     const newCanvases = [];
                     const fragment = document.createDocumentFragment();
-
                     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
                         if (generation !== renderGeneration || activeFile !== file || !viewer.classList.contains("active")) {
                             return;
                         }
-
                         const page = await pdf.getPage(pageNumber);
                         if (generation !== renderGeneration) {
                             return;
                         }
-
                         const baseViewport = page.getViewport({ scale: 1 });
                         const availableWidth = Math.max(260, scrollArea.clientWidth - 24);
                         const fitScale = Math.min(1.5, availableWidth / baseViewport.width);
@@ -2052,7 +1730,6 @@
                         const outputScale = Math.min(window.devicePixelRatio || 1, 2);
                         const canvas = document.createElement("canvas");
                         const context = canvas.getContext("2d", { alpha: false });
-
                         canvas.className = "pdf-page-canvas";
                         canvas.dataset.pageNumber = String(pageNumber);
                         canvas.width = Math.max(1, Math.floor(viewport.width * outputScale));
@@ -2061,7 +1738,6 @@
                         canvas.style.height = Math.floor(viewport.height) + "px";
                         canvas.style.maxWidth = "none";
                         canvas.setAttribute("aria-label", "Trang " + pageNumber);
-
                         newCanvases.push(canvas);
                         if (keepOldPagesVisible) {
                             fragment.appendChild(canvas);
@@ -2069,7 +1745,6 @@
                             pageCanvases.push(canvas);
                             scrollArea.appendChild(canvas);
                         }
-
                         await page.render({
                             canvasContext: context,
                             viewport,
@@ -2078,11 +1753,9 @@
                                 : null
                         }).promise;
                     }
-
                     if (generation !== renderGeneration || activeFile !== file || !viewer.classList.contains("active")) {
                         return;
                     }
-
                     if (keepOldPagesVisible) {
                         pageCanvases.splice(0, pageCanvases.length, ...newCanvases);
                         scrollArea.replaceChildren(fragment);
@@ -2091,19 +1764,16 @@
                         newCanvases.forEach(canvas => canvas.classList.add("zoom-arrive"));
                     }
                 }
-
                 function syncPageFromScroll() {
                     if (isProgrammaticScroll) {
                         return;
                     }
-
                     cancelAnimationFrame(scrollSyncFrame);
                     scrollSyncFrame = requestAnimationFrame(() => {
                         const areaRect = scrollArea.getBoundingClientRect();
                         const middleY = areaRect.top + areaRect.height / 2;
                         let closestPage = 1;
                         let closestDistance = Infinity;
-
                         pageCanvases.forEach((canvas, index) => {
                             const rect = canvas.getBoundingClientRect();
                             const pageMiddleY = rect.top + rect.height / 2;
@@ -2113,26 +1783,21 @@
                                 closestPage = index + 1;
                             }
                         });
-
                         toolbar.setCurrentPage(closestPage);
                     });
                 }
-
                 let lastPinchDistance = 0;
                 let pinchStartZoom = 100;
                 let lastGestureZoomUpdate = 0;
-
                 function distanceBetweenTouches(touchA, touchB) {
                     const deltaX = touchA.clientX - touchB.clientX;
                     const deltaY = touchA.clientY - touchB.clientY;
                     return Math.hypot(deltaX, deltaY);
                 }
-
                 scrollArea.addEventListener("wheel", event => {
                     if (!event.ctrlKey) {
                         return;
                     }
-
                     event.preventDefault();
                     const now = performance.now();
                     if (now - lastGestureZoomUpdate < 45) {
@@ -2142,19 +1807,16 @@
                     const step = event.deltaY < 0 ? 10 : -10;
                     toolbar.setZoom(currentZoom + step);
                 }, { passive: false });
-
                 scrollArea.addEventListener("touchstart", event => {
                     if (event.touches.length === 2) {
                         lastPinchDistance = distanceBetweenTouches(event.touches[0], event.touches[1]);
                         pinchStartZoom = currentZoom;
                     }
                 }, { passive: true });
-
                 scrollArea.addEventListener("touchmove", event => {
                     if (event.touches.length !== 2 || !lastPinchDistance) {
                         return;
                     }
-
                     event.preventDefault();
                     const distance = distanceBetweenTouches(event.touches[0], event.touches[1]);
                     const ratio = distance / lastPinchDistance;
@@ -2167,11 +1829,9 @@
                     lastPinchDistance = distance;
                     pinchStartZoom = currentZoom;
                 }, { passive: false });
-
                 function resetPinch() {
                     lastPinchDistance = 0;
                 }
-
                 scrollArea.addEventListener("touchend", resetPinch, { passive: true });
                 scrollArea.addEventListener("touchcancel", resetPinch, { passive: true });
                 scrollArea.addEventListener("scroll", syncPageFromScroll, { passive: true });
@@ -2183,7 +1843,6 @@
                 }
             }
         }
-
         function showMissingFile() {
             activeFile = null;
             viewer.classList.add("missing-file");
@@ -2198,13 +1857,10 @@
             downloadViewerButton.style.display = "none";
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
-
             previousBodyOverflow = document.body.style.overflow;
             document.body.style.overflow = "hidden";
-
             const wrapper = document.createElement("div");
             wrapper.className = "viewer-message";
-
             const warning = document.createElement("div");
             warning.className = "viewer-warning-icon";
             warning.innerHTML = `
@@ -2213,29 +1869,23 @@
                     <path d="M13 3v7h7M9 14l6 5m0-5-6 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             `;
-
             const text = document.createElement("div");
             text.textContent = "File này không tồn tại!";
-
             wrapper.appendChild(warning);
             wrapper.appendChild(text);
             viewerBody.appendChild(wrapper);
         }
-
         async function openFileById(id) {
             const target = files.find(file => String(file.id) === String(id));
-
             if (!target) {
                 showMissingFile();
                 return;
             }
-
             try {
                 const response = await fetch(getFileUrl(target), {
                     method: "HEAD",
                     cache: "no-store"
                 });
-
                 if (!response.ok) {
                     showMissingFile();
                     return;
@@ -2245,31 +1895,24 @@
                 showMissingFile();
                 return;
             }
-
             openFile(target, false, true);
         }
-
         function addOfficeCornerCover() {
             const cover = document.createElement("div");
             cover.className = "office-corner-cover";
             cover.setAttribute("aria-hidden", "true");
             viewerBody.appendChild(cover);
         }
-
         function openFile(file, updateUrl = false, fromDirectLink = false) {
             if (!file || !file.fileName) {
                 return;
             }
-
             activeFile = file;
             viewer.classList.remove("missing-file");
-
             siteHeader.style.display = "none";
             mainContent.style.display = "none";
-
             viewer.classList.add("active");
             viewer.setAttribute("aria-hidden", "false");
-
             viewerTitle.textContent = file.displayName || file.fileName;
             viewerTitle.title = file.displayName || file.fileName;
             setFileIcon(viewerFileIcon, file.fileName);
@@ -2277,43 +1920,33 @@
             downloadViewerButton.style.display = "grid";
             downloadViewerButton.disabled = false;
             downloadViewerButton.title = "Tải xuống " + (file.fileName.split("/").pop());
-
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
-
             previousBodyOverflow = document.body.style.overflow;
             document.body.style.overflow = "hidden";
-
             const fileUrl = getFileUrl(file);
             const extension = getExtension(file.fileName);
-
             if (OFFICE_EXTENSIONS.has(extension)) {
                 const iframe = document.createElement("iframe");
-
                 iframe.className = "viewer-frame";
                 iframe.title = file.displayName || file.fileName;
                 iframe.referrerPolicy = "no-referrer";
                 iframe.src =
                     "https://view.officeapps.live.com/op/embed.aspx?src=" +
                     encodeURIComponent(fileUrl);
-
                 showIframeWhenLoaded(iframe, "Đang tải tài liệu Office…");
                 addOfficeCornerCover();
                 return;
             }
-
             if (extension === "pdf") {
                 renderPdf(file, fileUrl);
                 return;
             }
-
             if (IMAGE_EXTENSIONS.has(extension)) {
                 const image = document.createElement("img");
-
                 image.className = "viewer-image";
                 image.alt = file.displayName || file.fileName;
                 image.src = fileUrl;
-
                 image.addEventListener(
                     "error",
                     () => showViewerMessage(
@@ -2322,32 +1955,24 @@
                     ),
                     { once: true }
                 );
-
                 viewerBody.appendChild(image);
                 return;
             }
-
             if (VIDEO_EXTENSIONS.has(extension)) {
                 const video = document.createElement("video");
-
                 video.className = "viewer-frame";
                 video.controls = true;
                 video.src = fileUrl;
-
                 viewerBody.appendChild(video);
                 return;
             }
-
             if (AUDIO_EXTENSIONS.has(extension)) {
                 const audio = document.createElement("audio");
-
                 audio.controls = true;
                 audio.src = fileUrl;
                 audio.style.width = "min(90%, 650px)";
                 audio.style.margin = "auto";
-
                 viewerBody.appendChild(audio);
-
                 audio.addEventListener(
                     "error",
                     () => showViewerMessage(
@@ -2356,23 +1981,18 @@
                     ),
                     { once: true }
                 );
-
                 return;
             }
-
             if (TEXT_EXTENSIONS.has(extension)) {
                 const pre = document.createElement("pre");
-
                 pre.className = "viewer-text";
                 pre.textContent = "Đang tải nội dung…";
                 viewerBody.appendChild(pre);
-
                 fetch(fileUrl)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error("HTTP " + response.status);
                         }
-
                         return response.text();
                     })
                     .then(text => {
@@ -2385,60 +2005,47 @@
                     })
                     .catch(error => {
                         console.error(error);
-
                         showViewerMessage(
                             "Không thể hiển thị nội dung file này trong trình duyệt.",
                             fileUrl
                         );
                     });
-
                 return;
             }
-
             showViewerMessage(
                 "Định dạng này chưa được hỗ trợ xem trực tiếp trên NdLMS.",
                 fileUrl
             );
         }
-
         function closeViewer(updateUrl = true) {
             if (!viewer.classList.contains("active")) {
                 return;
             }
-
             viewer.classList.remove("active");
             viewer.setAttribute("aria-hidden", "true");
-
             viewerBody.replaceChildren();
             viewerBody.style.display = "flex";
-
             siteHeader.style.display = "";
             mainContent.style.display = "";
-
             document.body.style.overflow = previousBodyOverflow;
             activeFile = null;
             closeViewerButton.style.display = "grid";
             downloadViewerButton.style.display = "grid";
             downloadViewerButton.disabled = false;
         }
-
         async function downloadActiveFile() {
             if (!activeFile || downloadInProgress) {
                 return;
             }
-
             downloadInProgress = true;
             downloadViewerButton.disabled = true;
             const file = activeFile;
             const fileUrl = getFileUrl(file);
-
             try {
                 const response = await fetch(fileUrl, { cache: "no-store" });
-
                 if (!response.ok) {
                     throw new Error("HTTP " + response.status);
                 }
-
                 const blob = await response.blob();
                 const objectUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
@@ -2457,43 +2064,33 @@
                 downloadViewerButton.disabled = false;
             }
         }
-
         downloadViewerButton.addEventListener("click", downloadActiveFile);
-
         closeViewerButton.addEventListener(
             "click",
             () => closeViewer()
         );
-
         document.addEventListener("keydown", event => {
             if (event.key === "Escape") {
                 closeViewer();
             }
         });
-
         window.addEventListener("popstate", () => {
             const requestedId = new URLSearchParams(
                 window.location.search
             ).get("id");
-
             if (!requestedId) {
                 closeViewer(false);
                 return;
             }
-
             openFileById(requestedId);
         });
-
         const initialFileId = new URLSearchParams(window.location.search).get("id");
-
         if (initialFileId) {
             showDirectLinkLoading();
         }
-
         (() => {
             const AUTO_REFRESH_MS = 5000;
             let refreshInProgress = false;
-
             function shouldSkipAutoRefresh() {
                 return (
                     viewer.classList.contains("active") ||
@@ -2501,35 +2098,28 @@
                     document.hidden
                 );
             }
-
             async function refreshFileList() {
                 if (refreshInProgress || shouldSkipAutoRefresh()) {
                     return;
                 }
-
                 refreshInProgress = true;
-
                 try {
                     const response = await fetch(
                         MAPS_URL + "?t=" + Date.now(),
                         { cache: "no-store" }
                     );
-
                     if (!response.ok) {
                         return;
                     }
-
                     const data = await response.json();
                     if (!data || !Array.isArray(data.files)) {
                         return;
                     }
-
                     const incomingFiles = data.files.filter(file =>
                         file &&
                         typeof file.fileName === "string" &&
                         file.fileName.trim() !== ""
                     );
-
                     const knownFiles = new Set(
                         files.map(file => file.fileName.trim().toLowerCase())
                     );
@@ -2537,7 +2127,6 @@
                         const key = file.fileName.trim().toLowerCase();
                         return key && !knownFiles.has(key);
                     });
-
                     if (newFiles.length) {
                         files = [...files, ...newFiles];
                         renderFiles();
@@ -2548,20 +2137,16 @@
                     refreshInProgress = false;
                 }
             }
-
             const poller = setInterval(refreshFileList, AUTO_REFRESH_MS);
-
             document.addEventListener("visibilitychange", () => {
                 if (!document.hidden) {
                     refreshFileList();
                 }
             });
-
             window.addEventListener("beforeunload", () => {
                 clearInterval(poller);
             });
         })();
-
         loadFiles();
     </script>
 </body>
